@@ -13,6 +13,38 @@ notifications:
 
 #https://istio.io/docs/setup/platform-setup/gardener/
 #https://github.com/gardener/gardener/blob/master/docs/development/local_setup.md
+fleet_script_gardener_macos_tasks : &fleet_script_gardener_macos_tasks #If you are running minikube within a VM, consider using --driver=none
+      script:
+        # Install kind via brew
+        - /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"  #Install brew
+        - brew install kubernetes-cli #Installing kubectl and helm
+        - brew install kubernetes-helm
+        - brew install git #Installing git
+        - brew install openvpn #Installing openvpn
+        - export PATH=$(brew --prefix openvpn)/sbin:$PATH
+        #Alternatively, you can also install Docker for Desktop and kind.
+        #Installing Minikube
+        - brew install minikube #https://minikube.sigs.k8s.io/docs/start/
+        - which minikube
+        #Alternatively,Installing Minikube
+        # - curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-darwin-amd64
+        # - sudo install minikube-darwin-amd64 /usr/local/bin/minikube
+        # - which minikube
+        # - brew cask remove minikube #If which minikube fails after installation via brew, you may have to remove the minikube cask and link the binary
+        # - brew link minikube
+        - brew install iproute2mac #Installing iproute2
+        - go get -u github.com/bronze1man/yaml2json #Installing yaml2json and jq
+        - brew install jq
+        - brew install coreutils gnu-sed #Install GNU core utilities
+        #Local Gardener setup
+        - git clone git@github.com:gardener/gardener.git && cd gardener
+        # Using the nodeless cluster setup,Setting up a local nodeless Garden cluster is quite simple
+        # The only prerequisite is a running docker daemon. Just use the provided Makefile rules to start your local Garden
+        - make local-garden-up #start all minimally required components of a Kubernetes cluster (etcd, kube-apiserver, kube-controller-manager) and an etcd Instance for the gardener-apiserver as Docker containers
+        - make local-garden-down #tear down the local Garden cluster and remove the Docker containers
+
+#https://istio.io/docs/setup/platform-setup/gardener/
+#https://github.com/gardener/gardener/blob/master/docs/development/local_setup.md
 fleet_script_kind_gardener_tasks : &fleet_script_kind_gardener_tasks #If you are running minikube within a VM, consider using --driver=none
       script:
           - curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.8.1/kind-$(uname)-amd64
@@ -486,6 +518,20 @@ matrix:
         # - kind get clusters # list kind clusters
       <<: *fleet_install_tasks
       <<: *fleet_script_tasks
+      after_success:
+        - deactivate
+
+    - name: "gardener Python 2.7.17 on macOS xcode10.2"
+      os: osx
+      osx_image: xcode10.2
+      language: shell
+      before_install:
+        - pip install virtualenv
+        - virtualenv -p $(which python2) ~venvpy2
+        - source ~venvpy2/bin/activate
+      <<: *fleet_install_tasks
+      <<: *fleet_script_tasks
+      <<: *fleet_script_gardener_macos_tasks
       after_success:
         - deactivate
 

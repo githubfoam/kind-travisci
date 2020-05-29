@@ -52,3 +52,12 @@ Kubernetes auditing provides a security-relevant chronological set of records do
     to where was it going?
 https://kubernetes.io/docs/tasks/debug-application-cluster/audit/
 ~~~~
+
+~~~~
+Bootstrapping Gardener
+https://istio.io/docs/setup/platform-setup/gardener/
+
+Preparing the Setup
+Conceptually, all Gardener components are designated to run inside as a Pod inside a Kubernetes cluster.
+https://github.com/gardener/gardener/blob/master/docs/development/local_setup.md
+~~~~
