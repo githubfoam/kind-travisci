@@ -527,19 +527,19 @@ matrix:
       after_success:
         - deactivate
 
-    - name: "gardener Python 2.7.17 on macOS xcode10.2"
-      os: osx
-      osx_image: xcode10.2
-      language: shell
-      before_install:
-        - pip install virtualenv
-        - virtualenv -p $(which python2) ~venvpy2
-        - source ~venvpy2/bin/activate
-      <<: *fleet_install_tasks
-      <<: *fleet_script_tasks
-      <<: *fleet_script_gardener_macos_tasks
-      after_success:
-        - deactivate
+    # - name: "gardener Python 2.7.17 on macOS xcode10.2"
+    #   os: osx
+    #   osx_image: xcode10.2
+    #   language: shell
+    #   before_install:
+    #     - pip install virtualenv
+    #     - virtualenv -p $(which python2) ~venvpy2
+    #     - source ~venvpy2/bin/activate
+    #   <<: *fleet_install_tasks
+    #   <<: *fleet_script_tasks
+    #   <<: *fleet_script_gardener_macos_tasks
+    #   after_success:
+    #     - deactivate
 
 
 
