@@ -13,7 +13,7 @@ notifications:
 
 #https://istio.io/docs/setup/platform-setup/gardener/
 #https://github.com/gardener/gardener/blob/master/docs/development/local_setup.md
-fleet_script_kind_gadener_tasks : &fleet_script_kind_gadener_tasks #If you are running minikube within a VM, consider using --driver=none
+fleet_script_kind_gardener_tasks : &fleet_script_kind_gadener_tasks #If you are running minikube within a VM, consider using --driver=none
       script:
           - curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.8.1/kind-$(uname)-amd64
           - chmod +x ./kind
