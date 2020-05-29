@@ -38,7 +38,7 @@ fleet_script_kind_gardener_tasks : &fleet_script_kind_gardener_tasks #If you are
           #To login to Dashboard, you need a Bearer Token. Use the following command to store the token in a variable
           - token=$(kubectl get secrets -o jsonpath="{.items[?(@.metadata.annotations['kubernetes\.io/service-account\.name']=='default')].data.token}"|base64 --decode)
           - echo $token #Display the token using the echo command and copy it to use for logging into Dashboard.
-          - kubectl proxy # Access Dashboard using the kubectl command-line tool by running the following command
+          - kubectl proxy & # Access Dashboard using the kubectl command-line tool by running the following command, Starting to serve on 127.0.0.1:8001
           # - kind delete cluster --name istio-testing #delete the existing cluster
 
 
@@ -96,12 +96,12 @@ fleet_script_kind_istio_tasks : &fleet_script_kind_istio_tasks #If you are runni
               sleep 2
             done
           - kubectl get service --all-namespaces #list all services in all namespace
-          - |
-            kubectl exec -it $(kubectl get pod \
-                         -l app=ratings \
-                         -o jsonpath='{.items[0].metadata.name}') \
-                         -c ratings \
-                         -- curl productpage:9080/productpage | grep -o "<title>.*</title>" <title>Simple Bookstore App</title>
+          # - |
+          #   kubectl exec -it $(kubectl get pod \
+          #                -l app=ratings \
+          #                -o jsonpath='{.items[0].metadata.name}') \
+          #                -c ratings \
+          #                -- curl productpage:9080/productpage | grep -o "<title>.*</title>" <title>Simple Bookstore App</title>
           #Open the application to outside traffic
           #The Bookinfo application is deployed but not accessible from the outside. To make it accessible, you need to create an Istio Ingress Gateway, which maps a path to a route at the edge of your mesh.
           # - kubectl apply -f samples/bookinfo/networking/bookinfo-gateway.yaml #Associate this application with the Istio gateway
@@ -466,24 +466,24 @@ matrix:
         # Install kind via brew
         - /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"  #Install brew
         - brew install kind
-        - kind create cluster # Default cluster context name is `kind`.
-        - kind create cluster --name kind-2
-        - kind get clusters # list kind clusters
-        - kubectl cluster-info --context kind-kind #In order to interact with a specific cluster, you only need to specify the cluster name as a context in kubectl
-        - kind load docker-image hello-world #Docker images can be loaded into your cluster nodes
-        # - kind load image-archive /my-image-archive.tar #image archives can be loaded
-        # custom DockerFile build workflow starts, don't use a :latest tag
-        # - docker build -t my-custom-image:unique-tag ./my-image-dir
-        # - kind load docker-image my-custom-image:unique-tag
-        # - kubectl apply -f my-manifest-using-my-image:unique-tag
-        # - docker exec -it my-node-name crictl images # get a list of images present on a cluster node,my-node-name is the name of the Docker container
-        # - kind build node-image --type bazel #by using docker or bazel. To specify the build type use the flag --type
-        # custom DockerFile build workflow ends
-        - kubectl cluster-info --context kind-kind-2
-        - kind load docker-image hello-world --name kind-2 #If using a named cluster you will need to specify the name of the cluster you wish to load the image into
-        - kind delete cluster #If the flag --name is not specified, kind uses the default cluster context name kind and deletes that cluster
-        - kind delete cluster --name kind-2
-        - kind get clusters # list kind clusters
+        # - kind create cluster # Default cluster context name is `kind`.
+        # - kind create cluster --name kind-2
+        # - kind get clusters # list kind clusters
+        # - kubectl cluster-info --context kind-kind #In order to interact with a specific cluster, you only need to specify the cluster name as a context in kubectl
+        # - kind load docker-image hello-world #Docker images can be loaded into your cluster nodes
+        # # - kind load image-archive /my-image-archive.tar #image archives can be loaded
+        # # custom DockerFile build workflow starts, don't use a :latest tag
+        # # - docker build -t my-custom-image:unique-tag ./my-image-dir
+        # # - kind load docker-image my-custom-image:unique-tag
+        # # - kubectl apply -f my-manifest-using-my-image:unique-tag
+        # # - docker exec -it my-node-name crictl images # get a list of images present on a cluster node,my-node-name is the name of the Docker container
+        # # - kind build node-image --type bazel #by using docker or bazel. To specify the build type use the flag --type
+        # # custom DockerFile build workflow ends
+        # - kubectl cluster-info --context kind-kind-2
+        # - kind load docker-image hello-world --name kind-2 #If using a named cluster you will need to specify the name of the cluster you wish to load the image into
+        # - kind delete cluster #If the flag --name is not specified, kind uses the default cluster context name kind and deletes that cluster
+        # - kind delete cluster --name kind-2
+        # - kind get clusters # list kind clusters
       <<: *fleet_install_tasks
       <<: *fleet_script_tasks
       after_success:
@@ -531,8 +531,8 @@ matrix:
         - virtualenv $HOME/venv
         - source $HOME/venv/Scripts/activate
         # Install kind via chocolatey
-        - Get-ExecutionPolicy #If it returns Restricted, then run Set-ExecutionPolicy AllSigned or Set-ExecutionPolicy Bypass -Scope Process.
-        - Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+        # - Get-ExecutionPolicy #If it returns Restricted, then run Set-ExecutionPolicy AllSigned or Set-ExecutionPolicy Bypass -Scope Process.
+        # - Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
         - choco install kind
       <<: *fleet_install_tasks
       <<: *fleet_script_tasks
