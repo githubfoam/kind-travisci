@@ -13,7 +13,7 @@ notifications:
 
 #https://istio.io/docs/setup/platform-setup/gardener/
 #https://github.com/gardener/gardener/blob/master/docs/development/local_setup.md
-fleet_script_kind_gardener_tasks : &fleet_script_kind_gadener_tasks #If you are running minikube within a VM, consider using --driver=none
+fleet_script_kind_gardener_tasks : &fleet_script_kind_gardener_tasks #If you are running minikube within a VM, consider using --driver=none
       script:
           - curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.8.1/kind-$(uname)-amd64
           - chmod +x ./kind
@@ -227,6 +227,20 @@ matrix:
   fast_finish: true
   include:
 
+    - name: "kind gardener  Python 3.7 on bionic"
+      dist: bionic
+      language: python
+      python: 3.7
+      before_install:
+        - pip3 install virtualenv
+        - virtualenv -p $(which python3) ~venvpy3
+        - source ~venvpy3/bin/activate
+      <<: *fleet_install_tasks
+      <<: *fleet_script_tasks
+      <<: *fleet_script_kind_gardener_tasks
+      after_success:
+        - deactivate
+
     - name: "kind istio  Python 3.7 on bionic"
       dist: bionic
       language: python
@@ -253,6 +267,20 @@ matrix:
       <<: *fleet_install_tasks
       <<: *fleet_script_tasks
       <<: *fleet_script_kind_istio_tasks
+      after_success:
+        - deactivate
+
+    - name: "kind gardener  Python 3.7 on xenial"
+      dist: xenial
+      language: python
+      python: 3.7
+      before_install:
+        - pip3 install virtualenv
+        - virtualenv -p $(which python3) ~venvpy3
+        - source ~venvpy3/bin/activate
+      <<: *fleet_install_tasks
+      <<: *fleet_script_tasks
+      <<: *fleet_script_kind_gardener_tasks
       after_success:
         - deactivate
 
