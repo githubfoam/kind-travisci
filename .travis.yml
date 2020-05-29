@@ -35,13 +35,19 @@ fleet_script_gardener_macos_tasks : &fleet_script_gardener_macos_tasks #If you a
         - brew install iproute2mac #Installing iproute2
         - go get -u github.com/bronze1man/yaml2json #Installing yaml2json and jq
         - brew install jq
-        - brew install coreutils gnu-sed #Install GNU core utilities
+        # - brew install coreutils gnu-sed #Install GNU core utilities,Error: coreutils 8.31 is already installed
         #Local Gardener setup
         - git clone git@github.com:gardener/gardener.git && cd gardener
         # Using the nodeless cluster setup,Setting up a local nodeless Garden cluster is quite simple
         # The only prerequisite is a running docker daemon. Just use the provided Makefile rules to start your local Garden
         - make local-garden-up #start all minimally required components of a Kubernetes cluster (etcd, kube-apiserver, kube-controller-manager) and an etcd Instance for the gardener-apiserver as Docker containers
         - make local-garden-down #tear down the local Garden cluster and remove the Docker containers
+        # istio Kubernetes Gardener Bootstrapping Gardener #https://istio.io/docs/setup/platform-setup/gardener/
+        #Install and configure kubectl https://kubernetes.io/docs/tasks/tools/install-kubectl/
+        - curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/darwin/amd64/kubectl"
+        - chmod +x ./kubectl #Make the kubectl binary executable
+        - sudo mv ./kubectl /usr/local/bin/kubectl #Move the binary in to your PATH
+        - kubectl version --client #Test to ensure the version you installed is up-to-date
 
 #https://istio.io/docs/setup/platform-setup/gardener/
 #https://github.com/gardener/gardener/blob/master/docs/development/local_setup.md

@@ -61,3 +61,10 @@ Preparing the Setup
 Conceptually, all Gardener components are designated to run inside as a Pod inside a Kubernetes cluster.
 https://github.com/gardener/gardener/blob/master/docs/development/local_setup.md
 ~~~~
+
+~~~~
+Installing Chocolatey
+https://chocolatey.org/docs/installation
+Install Homebrew
+https://brew.sh/
+~~~~
