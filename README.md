@@ -1,8 +1,8 @@
-# minikube-travisci
-minikube pipeline
+# kind-travisci
+kind pipeline
 
 Travis (.com) dev branch:
-[![Build Status](https://travis-ci.com/githubfoam/minikube-travisci.svg?branch=dev)](https://travis-ci.com/githubfoam/minikube-travisci)  
+[![Build Status](https://travis-ci.com/githubfoam/kind-travisci.svg?branch=dev)](https://travis-ci.com/githubfoam/kind-travisci)  
 
 ~~~~
 The Kubernetes command-line tool, kubectl, allows you to run commands against Kubernetes clusters
@@ -35,6 +35,9 @@ To use kind, you will also need to install docker.
 Install the latest version of kind.
 
 https://istio.io/docs/setup/platform-setup/kind/
+
+Quick Start
+https://kind.sigs.k8s.io/docs/user/quick-start
 ~~~~
 
 ~~~~

@@ -42,7 +42,6 @@ fleet_script_kind_gardener_tasks : &fleet_script_kind_gardener_tasks #If you are
           # - kind delete cluster --name istio-testing #delete the existing cluster
 
 
-#https://istio.io/docs/setup/platform-setup/kind/
 #https://kind.sigs.k8s.io/docs/user/quick-start/
 #https://istio.io/docs/setup/getting-started/
 fleet_script_kind_istio_tasks : &fleet_script_kind_istio_tasks #If you are running minikube within a VM, consider using --driver=none
@@ -456,22 +455,43 @@ matrix:
 
 
 
-    # - name: "Python 2.7.17 on macOS xcode10.2"
-    #   os: osx
-    #   osx_image: xcode10.2
-    #   language: shell
-    #   before_install:
-    #     - pip install virtualenv
-    #     - virtualenv -p $(which python2) ~venvpy2
-    #     - source ~venvpy2/bin/activate
-    #   <<: *fleet_install_tasks
-    #   <<: *fleet_script_tasks
-    #   after_success:
-    #     - deactivate
-    #
-    #
-    #
-    #
+    - name: "kind brew Python 2.7.17 on macOS xcode10.2"
+      os: osx
+      osx_image: xcode10.2
+      language: shell
+      before_install:
+        - pip install virtualenv
+        - virtualenv -p $(which python2) ~venvpy2
+        - source ~venvpy2/bin/activate
+        # Install kind via brew
+        - /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"  #Install brew
+        - brew install kind
+        - kind create cluster # Default cluster context name is `kind`.
+        - kind create cluster --name kind-2
+        - kind get clusters # list kind clusters
+        - kubectl cluster-info --context kind-kind #In order to interact with a specific cluster, you only need to specify the cluster name as a context in kubectl
+        - kind load docker-image hello-world #Docker images can be loaded into your cluster nodes
+        # - kind load image-archive /my-image-archive.tar #image archives can be loaded
+        # custom DockerFile build workflow starts, don't use a :latest tag
+        # - docker build -t my-custom-image:unique-tag ./my-image-dir
+        # - kind load docker-image my-custom-image:unique-tag
+        # - kubectl apply -f my-manifest-using-my-image:unique-tag
+        # - docker exec -it my-node-name crictl images # get a list of images present on a cluster node,my-node-name is the name of the Docker container
+        # - kind build node-image --type bazel #by using docker or bazel. To specify the build type use the flag --type
+        # custom DockerFile build workflow ends
+        - kubectl cluster-info --context kind-kind-2
+        - kind load docker-image hello-world --name kind-2 #If using a named cluster you will need to specify the name of the cluster you wish to load the image into
+        - kind delete cluster #If the flag --name is not specified, kind uses the default cluster context name kind and deletes that cluster
+        - kind delete cluster --name kind-2
+        - kind get clusters # list kind clusters
+      <<: *fleet_install_tasks
+      <<: *fleet_script_tasks
+      after_success:
+        - deactivate
+
+
+
+
     # - name: "Python 3.7.5 on macOS xcode10.2"
     #   os: osx
     #   osx_image: xcode10.2
@@ -500,21 +520,25 @@ matrix:
 
 
 
-    # - name: "Python 3.8 on Windows"
-    #   os: windows
-    #   language: shell
-    #   env:
-    #     - PATH=/c/Python38:/c/Python38/Scripts:$PATH
-    #   before_install:
-    #     - choco install python --version 3.8.1
-    #     - pip install virtualenv
-    #     - virtualenv $HOME/venv
-    #     - source $HOME/venv/Scripts/activate
-    #   <<: *fleet_install_tasks
-    #   <<: *fleet_script_tasks
-    #   after_success:
-    #     - deactivate
-    #
+    - name: "kind chocolatey Python 3.8 on Windows"
+      os: windows
+      language: shell
+      env:
+        - PATH=/c/Python38:/c/Python38/Scripts:$PATH
+      before_install:
+        - choco install python --version 3.8.1
+        - pip install virtualenv
+        - virtualenv $HOME/venv
+        - source $HOME/venv/Scripts/activate
+        # Install kind via chocolatey
+        - Get-ExecutionPolicy #If it returns Restricted, then run Set-ExecutionPolicy AllSigned or Set-ExecutionPolicy Bypass -Scope Process.
+        - Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+        - choco install kind
+      <<: *fleet_install_tasks
+      <<: *fleet_script_tasks
+      after_success:
+        - deactivate
+
     # - name: "Python 3.7 on Windows"
     #   os: windows
     #   language: shell
