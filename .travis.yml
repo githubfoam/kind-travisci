@@ -218,7 +218,7 @@ matrix:
         # - sudo make deploy-dashboard-helm
         - sudo helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/ # Add kubernetes-dashboard repository
         # - sudo helm install kubernetes-dashboard/kubernetes-dashboard --name my-release # Deploy a Helm Release named "my-release" using the kubernetes-dashboard chart
-        - sudo helm install stable/kubernetes-dashboard --name=kubernetes-dashboard --namespace=kube-system
+        - sudo helm install kubernetes-dashboard stable/kubernetes-dashboard
         - sudo kind delete cluster --name dashboard-testing
       after_success:
         - deactivate
