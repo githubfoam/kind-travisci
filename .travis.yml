@@ -23,7 +23,7 @@ fleet_script_kind_storage_tasks : &fleet_script_kind_storage_tasks #If you are r
           - sudo kubectl config get-contexts #kind is prefixed to the context and cluster names, for example: kind-istio-testing
           - sudo kubectl config use-context kind-openesb-testing
           - echo "============================status check=============================================================="
-          - sudo kubectl cluster-info dump #further debug and diagnose cluster problems
+          # - sudo kubectl cluster-info dump #further debug and diagnose cluster problems
           - sudo kubectl cluster-info
           - sudo kubectl get pods --all-namespaces;
           - sudo kubectl get pods -n default;
@@ -33,9 +33,9 @@ fleet_script_kind_storage_tasks : &fleet_script_kind_storage_tasks #If you are r
           - echo "=============================openEBS============================================================="
           # - pushd $(pwd) && cd app
           - sudo kubectl apply -f https://openebs.github.io/charts/openebs-operator.yaml #install OpenEBS
-          - kubectl get service --all-namespaces # find a Service IP,list all services in all namespaces
-          - kubectl get pods -n openebs -l openebs.io/component-name=openebs-localpv-provisioner #Observe localhost provisioner pod
-          - kubectl get sc #Check the storage Class
+          - sudo kubectl get service --all-namespaces # find a Service IP,list all services in all namespaces
+          - sudo kubectl get pods -n openebs -l openebs.io/component-name=openebs-localpv-provisioner #Observe localhost provisioner pod
+          - sudo kubectl get sc #Check the storage Class
           # openesb component list
           #https://github.com/openebs/openebs/blob/master/k8s/openebs-operator.yaml
           - |
