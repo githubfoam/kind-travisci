@@ -22,58 +22,59 @@ fleet_script_kind_storage_tasks : &fleet_script_kind_storage_tasks #If you are r
           - sudo kind get clusters
           - sudo kubectl config get-contexts #kind is prefixed to the context and cluster names, for example: kind-istio-testing
           - sudo kubectl config use-context kind-openesb-testing
-          - sudo kind delete cluster --name openesb-testing
           - echo "============================status check=============================================================="
+          - sudo kubectl cluster-info dump #further debug and diagnose cluster problems
           - sudo kubectl cluster-info
           - sudo kubectl get pods --all-namespaces;
           - sudo kubectl get pods -n default;
           - echo "=============================Inspection============================================================="
           - sudo kubectl get pod -o wide #The IP column will contain the internal cluster IP address for each pod.
           - sudo kubectl get service --all-namespaces # find a Service IP,list all services in all namespaces
-          # - echo "=============================openEBS============================================================="
+          - echo "=============================openEBS============================================================="
           # - pushd $(pwd) && cd app
-          # - sudo kubectl apply -f https://openebs.github.io/charts/openebs-operator.yaml #install OpenEBS
-          # - kubectl get service --all-namespaces # find a Service IP,list all services in all namespaces
-          # - kubectl get pods -n openebs -l openebs.io/component-name=openebs-localpv-provisioner #Observe localhost provisioner pod
-          # - kubectl get sc #Check the storage Class
-          # # openesb component list
-          # #https://github.com/openebs/openebs/blob/master/k8s/openebs-operator.yaml
-          # - |
-          #   echo "Waiting for openebs-localpv-provisioner component to be ready ..."
-          #   for i in {1..60}; do # Timeout after 5 minutes, 150x5=300 secs
-          #       if sudo kubectl get pods --namespace=openebs -l openebs.io/component-name=openebs-localpv-provisioner | grep Running ; then
-          #         break
-          #       fi
-          #       sleep 5
-          #   done
-          # - |
-          #   echo "Waiting for maya-apiserver component to be ready ..."
-          #   for i in {1..60}; do # Timeout after 5 minutes, 150x5=300 secs
-          #       if sudo kubectl get pods --namespace=openebs -l openebs.io/component-name=maya-apiserver | grep Running ; then
-          #         break
-          #       fi
-          #       sleep 5
-          #   done
-          # - |
-          #   echo "Waiting for openebs-ndm-operator component to be ready ..."
-          #   for i in {1..60}; do # Timeout after 5 minutes, 150x5=300 secs
-          #       if sudo kubectl get pods --namespace=openebs -l openebs.io/component-name=openebs-ndm-operator | grep Running ; then
-          #         break
-          #       fi
-          #       sleep 5
-          #   done
-          # - |
-          #   echo "Waiting for openebs to be ready ..."
-          #   for i in {1..60}; do # Timeout after 2 minutes, 60x2=300 secs
-          #       if sudo kubectl get pods --namespace=openebs | grep Running ; then
-          #         break
-          #       fi
-          #       sleep 2
-          #   done
-          # - sudo kubectl get pods --all-namespaces
-          # - sudo kubectl get pods --namespace=openebs
+          - sudo kubectl apply -f https://openebs.github.io/charts/openebs-operator.yaml #install OpenEBS
+          - kubectl get service --all-namespaces # find a Service IP,list all services in all namespaces
+          - kubectl get pods -n openebs -l openebs.io/component-name=openebs-localpv-provisioner #Observe localhost provisioner pod
+          - kubectl get sc #Check the storage Class
+          # openesb component list
+          #https://github.com/openebs/openebs/blob/master/k8s/openebs-operator.yaml
+          - |
+            echo "Waiting for openebs-localpv-provisioner component to be ready ..."
+            for i in {1..60}; do # Timeout after 5 minutes, 150x5=300 secs
+                if sudo kubectl get pods --namespace=openebs -l openebs.io/component-name=openebs-localpv-provisioner | grep Running ; then
+                  break
+                fi
+                sleep 5
+            done
+          - |
+            echo "Waiting for maya-apiserver component to be ready ..."
+            for i in {1..60}; do # Timeout after 5 minutes, 150x5=300 secs
+                if sudo kubectl get pods --namespace=openebs -l openebs.io/component-name=maya-apiserver | grep Running ; then
+                  break
+                fi
+                sleep 5
+            done
+          - |
+            echo "Waiting for openebs-ndm-operator component to be ready ..."
+            for i in {1..60}; do # Timeout after 5 minutes, 150x5=300 secs
+                if sudo kubectl get pods --namespace=openebs -l openebs.io/component-name=openebs-ndm-operator | grep Running ; then
+                  break
+                fi
+                sleep 5
+            done
+          - |
+            echo "Waiting for openebs to be ready ..."
+            for i in {1..60}; do # Timeout after 2 minutes, 60x2=300 secs
+                if sudo kubectl get pods --namespace=openebs | grep Running ; then
+                  break
+                fi
+                sleep 2
+            done
+          - sudo kubectl get pods --all-namespaces
+          - sudo kubectl get pods --namespace=openebs
           # - popd
-          # - echo "=============================openEBS============================================================="
+          - sudo kind delete cluster --name openesb-testing
+          - echo "=============================openEBS============================================================="
 
 #https://istio.io/docs/setup/platform-setup/gardener/
 #https://github.com/gardener/gardener/blob/master/docs/development/local_setup.md
@@ -614,17 +615,17 @@ matrix:
 
 
 
-    - name: "kind brew Python 2.7.17 on macOS xcode10.2"
-      os: osx
-      osx_image: xcode10.2
-      language: shell
-      before_install:
-        - pip install virtualenv
-        - virtualenv -p $(which python2) ~venvpy2
-        - source ~venvpy2/bin/activate
-        # Install kind via brew
-        - /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"  #Install brew
-        - brew install kind
+    # - name: "kind brew Python 2.7.17 on macOS xcode10.2"
+    #   os: osx
+    #   osx_image: xcode10.2
+    #   language: shell
+    #   before_install:
+    #     - pip install virtualenv
+    #     - virtualenv -p $(which python2) ~venvpy2
+    #     - source ~venvpy2/bin/activate
+    #     # Install kind via brew
+    #     - /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"  #Install brew
+    #     - brew install kind
         # - kind create cluster # Default cluster context name is `kind`.
         # - kind create cluster --name kind-2
         # - kind get clusters # list kind clusters
@@ -643,24 +644,24 @@ matrix:
         # - kind delete cluster #If the flag --name is not specified, kind uses the default cluster context name kind and deletes that cluster
         # - kind delete cluster --name kind-2
         # - kind get clusters # list kind clusters
-      <<: *fleet_install_tasks
-      <<: *fleet_script_tasks
-      after_success:
-        - deactivate
+      # <<: *fleet_install_tasks
+      # <<: *fleet_script_tasks
+      # after_success:
+      #   - deactivate
 
-    - name: "gardener Python 2.7.17 on macOS xcode10.2"
-      os: osx
-      osx_image: xcode10.2
-      language: shell
-      before_install:
-        - pip install virtualenv
-        - virtualenv -p $(which python2) ~venvpy2
-        - source ~venvpy2/bin/activate
-      <<: *fleet_install_tasks
-      <<: *fleet_script_tasks
-      <<: *fleet_script_gardener_macos_tasks
-      after_success:
-        - deactivate
+    # - name: "gardener Python 2.7.17 on macOS xcode10.2"
+    #   os: osx
+    #   osx_image: xcode10.2
+    #   language: shell
+    #   before_install:
+    #     - pip install virtualenv
+    #     - virtualenv -p $(which python2) ~venvpy2
+    #     - source ~venvpy2/bin/activate
+    #   <<: *fleet_install_tasks
+    #   <<: *fleet_script_tasks
+    #   <<: *fleet_script_gardener_macos_tasks
+    #   after_success:
+    #     - deactivate
 
 
 
@@ -693,24 +694,24 @@ matrix:
 
 
 
-    - name: "kind chocolatey Python 3.8 on Windows"
-      os: windows
-      language: shell
-      env:
-        - PATH=/c/Python38:/c/Python38/Scripts:$PATH
-      before_install:
-        - choco install python --version 3.8.1
-        - pip install virtualenv
-        - virtualenv $HOME/venv
-        - source $HOME/venv/Scripts/activate
-        # Install kind via chocolatey
-        # - Get-ExecutionPolicy #If it returns Restricted, then run Set-ExecutionPolicy AllSigned or Set-ExecutionPolicy Bypass -Scope Process.
-        # - Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
-        - choco install kind
-      <<: *fleet_install_tasks
-      <<: *fleet_script_tasks
-      after_success:
-        - deactivate
+    # - name: "kind chocolatey Python 3.8 on Windows"
+    #   os: windows
+    #   language: shell
+    #   env:
+    #     - PATH=/c/Python38:/c/Python38/Scripts:$PATH
+    #   before_install:
+    #     - choco install python --version 3.8.1
+    #     - pip install virtualenv
+    #     - virtualenv $HOME/venv
+    #     - source $HOME/venv/Scripts/activate
+    #     # Install kind via chocolatey
+    #     # - Get-ExecutionPolicy #If it returns Restricted, then run Set-ExecutionPolicy AllSigned or Set-ExecutionPolicy Bypass -Scope Process.
+    #     # - Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+    #     - choco install kind
+    #   <<: *fleet_install_tasks
+    #   <<: *fleet_script_tasks
+    #   after_success:
+    #     - deactivate
 
     # - name: "Python 3.7 on Windows"
     #   os: windows
