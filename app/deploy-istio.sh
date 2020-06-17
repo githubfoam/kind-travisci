@@ -1,6 +1,7 @@
 #!/bin/bash
-# openesb component list
-#https://github.com/openebs/openebs/blob/master/k8s/openebs-operator.yaml
+#https://istio.io/docs/setup/platform-setup/kind/
+#https://kind.sigs.k8s.io/docs/user/quick-start/
+#https://istio.io/docs/setup/getting-started/
 
 echo "=============================openEBS============================================================="
 kind create cluster --name openesb-testing

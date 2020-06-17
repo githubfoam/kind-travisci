@@ -11,7 +11,7 @@ notifications:
   slack:
     on_failure: always
 
-fleet_script_storage_tasks : &fleet_script_storage_tasks #If you are running minikube within a VM, consider using --driver=none
+fleet_script_kind_tasks : &fleet_script_kind_tasks #If you are running minikube within a VM, consider using --driver=none
       script:
           - echo "=============================deploy-kind============================================================="
           # - sudo make deploy-kind
@@ -25,7 +25,10 @@ fleet_script_storage_tasks : &fleet_script_storage_tasks #If you are running min
           - sudo kind get clusters
           - sudo kubectl config get-contexts #kind is prefixed to the context and cluster names, for example: kind-istio-testing
           - echo "=============================deploy-kind============================================================="
-          # - sudo make deploy-openesb
+
+fleet_script_storage_tasks : &fleet_script_storage_tasks #If you are running minikube within a VM, consider using --driver=none
+      script:
+          - sudo make deploy-openesb
 
 #https://istio.io/docs/setup/platform-setup/gardener/
 #https://github.com/gardener/gardener/blob/master/docs/development/local_setup.md
@@ -64,34 +67,6 @@ fleet_script_gardener_macos_tasks : &fleet_script_gardener_macos_tasks #If you a
         - chmod +x ./kubectl #Make the kubectl binary executable
         - sudo mv ./kubectl /usr/local/bin/kubectl #Move the binary in to your PATH
         - kubectl version --client #Test to ensure the version you installed is up-to-date
-
-#https://istio.io/docs/setup/platform-setup/gardener/
-#https://github.com/gardener/gardener/blob/master/docs/development/local_setup.md
-fleet_script_dashboard_tasks : &fleet_script_dashboard_tasks #If you are running minikube within a VM, consider using --driver=none
-      script:
-          - curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.8.1/kind-$(uname)-amd64
-          - chmod +x ./kind
-          - sudo mv ./kind /usr/local/bin/kind
-          - kind get clusters #see the list of kind clusters
-          # - sudo snap install kubectl --classic
-          - kubectl config get-contexts #list the local Kubernetes contexts
-          - kubectl config use-context kind-dashboard-testing #run following command to set the current context for kubectl
-          - kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-beta8/aio/deploy/recommended.yaml #deploy Dashboard
-          - echo "===============================Waiting for Dashboard to be ready==========================================================="
-          - |
-            for i in {1..150}; do # Timeout after 5 minutes, 150x2=300 secs
-              if kubectl get pods --namespace=kubernetes-dashboard | grep Running ; then
-                break
-              fi
-              sleep 2
-            done
-          - kubectl get pod -n kubernetes-dashboard #Verify that Dashboard is deployed and running
-          - kubectl create clusterrolebinding default-admin --clusterrole cluster-admin --serviceaccount=default:default #Create a ClusterRoleBinding to provide admin access to the newly created cluster
-          #To login to Dashboard, you need a Bearer Token. Use the following command to store the token in a variable
-          - token=$(kubectl get secrets -o jsonpath="{.items[?(@.metadata.annotations['kubernetes\.io/service-account\.name']=='default')].data.token}"|base64 --decode)
-          - echo $token #Display the token using the echo command and copy it to use for logging into Dashboard.
-          - kubectl proxy & # Access Dashboard using the kubectl command-line tool by running the following command, Starting to serve on 127.0.0.1:8001
-          # - kind delete cluster --name istio-testing #delete the existing cluster
 
 fleet_script_kind_istio_tasks : &fleet_script_kind_istio_tasks #If you are running minikube within a VM, consider using --driver=none
       script:
@@ -233,7 +208,7 @@ fleet_script_kind_istio_tasks : &fleet_script_kind_istio_tasks #If you are runni
           # - helm install --name heapster stable/heapster --namespace kube-system #install Heapster
           - kind delete cluster --name istio-testing #delete the existing cluster
 
-fleet_script_kind_tasks : &fleet_script_kind_tasks #If you are running minikube within a VM, consider using --driver=none
+fleet_script_dashboard_tasks : &fleet_script_dashboard_tasks #If you are running minikube within a VM, consider using --driver=none
       script:
           - docker version
           - curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.8.1/kind-$(uname)-amd64
@@ -291,9 +266,12 @@ matrix:
         - source ~venvpy3/bin/activate
       <<: *fleet_install_tasks
       <<: *fleet_script_tasks
-      <<: *fleet_script_storage_tasks
+      <<: *fleet_script_kind_tasks
+      # <<: *fleet_script_storage_tasks
       script:
-        - sudo make deploy-openesb
+      # <<: *fleet_script_kind_tasks
+      <<: *fleet_script_storage_tasks
+
       after_success:
         - deactivate
 
@@ -414,7 +392,7 @@ matrix:
     #     - source ~venvpy3/bin/activate
     #   <<: *fleet_install_tasks
     #   <<: *fleet_script_tasks
-    #   <<: *fleet_script_kind_tasks
+    #   <<: *fleet_script_dashboard_tasks
     #   after_success:
     #     - deactivate
 
