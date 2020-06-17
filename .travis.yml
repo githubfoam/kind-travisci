@@ -271,7 +271,10 @@ matrix:
       # <<: *fleet_script_storage_tasks
       script:
         # - sudo make deploy-kind
+        - sudo kind create cluster --name openesb-testing
+        - sudo kubectl config use-context kind-openesb-testing
         - sudo make deploy-openesb
+        - sudo kind delete cluster --name openesb-testing
       # <<: *fleet_script_kind_tasks
       # <<: *fleet_script_storage_tasks
 

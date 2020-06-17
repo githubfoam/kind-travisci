@@ -3,8 +3,8 @@
 #https://github.com/openebs/openebs/blob/master/k8s/openebs-operator.yaml
 
 echo "=============================openEBS============================================================="
-kind create cluster --name openesb-testing
-kubectl config use-context kind-openesb-testing
+# kind create cluster --name openesb-testing
+# kubectl config use-context kind-openesb-testing
 kubectl cluster-info
 kubectl get pods --all-namespaces;
 kubectl get pods -n default;
@@ -52,5 +52,5 @@ done
 kubectl get pods --all-namespaces
 kubectl get pods --namespace=openebs
 kubectl get pod -n default -o wide  --all-namespaces
-kind delete cluster --name openesb-testing
+# kind delete cluster --name openesb-testing
 echo "=============================openEBS============================================================="
