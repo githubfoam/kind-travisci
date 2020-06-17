@@ -1,7 +1,8 @@
 #!/bin/bash
 echo "=============================deploy kind============================================================="
 docker version
-curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.8.1/kind-$(uname)-amd64
+export KIND_VERSION="0.8.1"
+curl -Lo ./kind https://kind.sigs.k8s.io/dl/v$KIND_VERSION/kind-$(uname)-amd64
 chmod +x ./kind
 mv ./kind /usr/local/bin/kind
 kind get clusters #see the list of kind clusters

@@ -264,12 +264,14 @@ matrix:
         - pip3 install virtualenv
         - virtualenv -p $(which python3) ~venvpy3
         - source ~venvpy3/bin/activate
+        - sudo make deploy-kind
       # <<: *fleet_install_tasks
       # <<: *fleet_script_tasks
       # <<: *fleet_script_kind_tasks
       # <<: *fleet_script_storage_tasks
       script:
-        - sudo make deploy-kind
+        # - sudo make deploy-kind
+        - sudo make deploy-openesb
       # <<: *fleet_script_kind_tasks
       # <<: *fleet_script_storage_tasks
 
