@@ -26,10 +26,6 @@ fleet_script_kind_tasks : &fleet_script_kind_tasks #If you are running minikube 
           - sudo kubectl config get-contexts #kind is prefixed to the context and cluster names, for example: kind-istio-testing
           - echo "=============================deploy-kind============================================================="
 
-fleet_script_storage_tasks : &fleet_script_storage_tasks #If you are running minikube within a VM, consider using --driver=none
-      script:
-          - sudo make deploy-openesb
-
 #https://istio.io/docs/setup/platform-setup/gardener/
 #https://github.com/gardener/gardener/blob/master/docs/development/local_setup.md
 fleet_script_gardener_macos_tasks : &fleet_script_gardener_macos_tasks #If you are running minikube within a VM, consider using --driver=none
@@ -250,7 +246,7 @@ matrix:
   fast_finish: true
   include:
 
-    - name: "kind storage  Python 3.7 on bionic"
+    - name: "openesb kind Python 3.7 on bionic" #OK
       dist: bionic
       arch: amd64
       addons:
@@ -264,22 +260,21 @@ matrix:
         - pip3 install virtualenv
         - virtualenv -p $(which python3) ~venvpy3
         - source ~venvpy3/bin/activate
-        - sudo make deploy-kind
-      # <<: *fleet_install_tasks
-      # <<: *fleet_script_tasks
-      # <<: *fleet_script_kind_tasks
-      # <<: *fleet_script_storage_tasks
+      <<: *fleet_install_tasks
+      <<: *fleet_script_tasks
       script:
-        # - sudo make deploy-kind
-        - sudo kind create cluster --name openesb-testing
-        - sudo kubectl config use-context kind-openesb-testing
-        - sudo make deploy-openesb
-        - sudo kind delete cluster --name openesb-testing
-      # <<: *fleet_script_kind_tasks
-      # <<: *fleet_script_storage_tasks
-
+        - sudo make deploy-kind
+        # - sudo kind create cluster --name openesb-testing
+        # - sudo kubectl config use-context kind-openesb-testing
+        # - sudo make deploy-openesb
+        # - sudo kind delete cluster --name openesb-testing
+        - sudo kind create cluster --name dashboard-testing
+        - sudo kubectl config use-context kind-dashboard-testing
+        - sudo make deploy-dashboard
+        - sudo kind delete cluster --name dashboard-testing
       after_success:
         - deactivate
+
 
     # - name: "kind gardener  Python 3.7 on bionic"
     #   dist: bionic
