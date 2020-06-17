@@ -11,4 +11,4 @@ deploy-dashboard:
 	bash app/deploy-dashboard.sh
 push-image:
 	docker push $(IMAGE)
-.PHONY: deploy-kind deploy-openesb deploy-istio push-image
+.PHONY: deploy-kind deploy-openesb deploy-dashboard deploy-istio push-image
