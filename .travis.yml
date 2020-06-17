@@ -11,6 +11,70 @@ notifications:
   slack:
     on_failure: always
 
+fleet_script_kind_storage_tasks : &fleet_script_kind_storage_tasks #If you are running minikube within a VM, consider using --driver=none
+      script:
+          - docker version
+          - curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.8.1/kind-$(uname)-amd64
+          - chmod +x ./kind
+          - sudo mv ./kind /usr/local/bin/kind
+          - kind get clusters #see the list of kind clusters
+          - sudo kind create cluster --name openesb-testing
+          - sudo kind get clusters
+          - sudo kubectl config get-contexts #kind is prefixed to the context and cluster names, for example: kind-istio-testing
+          - sudo kubectl config use-context kind-openesb-testing
+          - sudo kind delete cluster --name openesb-testing
+          # - echo "============================status check=============================================================="
+          # - kubectl cluster-info
+          # - kubectl get pods --all-namespaces;
+          # - kubectl get pods -n default;
+          # - echo "=============================Inspection============================================================="
+          # - kubectl get pod -o wide #The IP column will contain the internal cluster IP address for each pod.
+          # - kubectl get service --all-namespaces # find a Service IP,list all services in all namespaces
+          # - echo "=============================openEBS============================================================="
+          # - pushd $(pwd) && cd app
+          # - sudo kubectl apply -f https://openebs.github.io/charts/openebs-operator.yaml #install OpenEBS
+          # - kubectl get service --all-namespaces # find a Service IP,list all services in all namespaces
+          # - kubectl get pods -n openebs -l openebs.io/component-name=openebs-localpv-provisioner #Observe localhost provisioner pod
+          # - kubectl get sc #Check the storage Class
+          # # openesb component list
+          # #https://github.com/openebs/openebs/blob/master/k8s/openebs-operator.yaml
+          # - |
+          #   echo "Waiting for openebs-localpv-provisioner component to be ready ..."
+          #   for i in {1..60}; do # Timeout after 5 minutes, 150x5=300 secs
+          #       if sudo kubectl get pods --namespace=openebs -l openebs.io/component-name=openebs-localpv-provisioner | grep Running ; then
+          #         break
+          #       fi
+          #       sleep 5
+          #   done
+          # - |
+          #   echo "Waiting for maya-apiserver component to be ready ..."
+          #   for i in {1..60}; do # Timeout after 5 minutes, 150x5=300 secs
+          #       if sudo kubectl get pods --namespace=openebs -l openebs.io/component-name=maya-apiserver | grep Running ; then
+          #         break
+          #       fi
+          #       sleep 5
+          #   done
+          # - |
+          #   echo "Waiting for openebs-ndm-operator component to be ready ..."
+          #   for i in {1..60}; do # Timeout after 5 minutes, 150x5=300 secs
+          #       if sudo kubectl get pods --namespace=openebs -l openebs.io/component-name=openebs-ndm-operator | grep Running ; then
+          #         break
+          #       fi
+          #       sleep 5
+          #   done
+          # - |
+          #   echo "Waiting for openebs to be ready ..."
+          #   for i in {1..60}; do # Timeout after 2 minutes, 60x2=300 secs
+          #       if sudo kubectl get pods --namespace=openebs | grep Running ; then
+          #         break
+          #       fi
+          #       sleep 2
+          #   done
+          # - sudo kubectl get pods --all-namespaces
+          # - sudo kubectl get pods --namespace=openebs
+          # - popd
+          # - echo "=============================openEBS============================================================="
+
 #https://istio.io/docs/setup/platform-setup/gardener/
 #https://github.com/gardener/gardener/blob/master/docs/development/local_setup.md
 fleet_script_gardener_macos_tasks : &fleet_script_gardener_macos_tasks #If you are running minikube within a VM, consider using --driver=none
@@ -92,7 +156,7 @@ fleet_script_kind_istio_tasks : &fleet_script_kind_istio_tasks #If you are runni
           - kind get clusters #see the list of kind clusters
           - kind create cluster --name istio-testing #Create a cluster,By default, the cluster will be given the name kind
           - kind get clusters
-          - sudo snap install kubectl --classic
+          # - sudo snap install kubectl --classic
           - kubectl config get-contexts #list the local Kubernetes contexts
           - kubectl config use-context kind-istio-testing #run following command to set the current context for kubectl
           - kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-beta8/aio/deploy/recommended.yaml #deploy Dashboard
@@ -265,8 +329,14 @@ matrix:
   fast_finish: true
   include:
 
-    - name: "kind gardener  Python 3.7 on bionic"
+    - name: "kind storage  Python 3.7 on bionic"
       dist: bionic
+      arch: amd64
+      addons:
+        snaps:
+          - name: kubectl
+            confinement: classic # or devmode
+            channel: latest/stable # will be passed to --channel flag
       language: python
       python: 3.7
       before_install:
@@ -275,80 +345,130 @@ matrix:
         - source ~venvpy3/bin/activate
       <<: *fleet_install_tasks
       <<: *fleet_script_tasks
-      <<: *fleet_script_kind_gardener_tasks
+      <<: *fleet_script_kind_storage_tasks
       after_success:
         - deactivate
 
-    - name: "kind istio  Python 3.7 on bionic"
-      dist: bionic
-      language: python
-      python: 3.7
-      before_install:
-        - pip3 install virtualenv
-        - virtualenv -p $(which python3) ~venvpy3
-        - source ~venvpy3/bin/activate
-      <<: *fleet_install_tasks
-      <<: *fleet_script_tasks
-      <<: *fleet_script_kind_istio_tasks
-      after_success:
-        - deactivate
-
-
-    - name: "kind  Python 3.7 on bionic"
-      dist: bionic
-      language: python
-      python: 3.7
-      before_install:
-        - pip3 install virtualenv
-        - virtualenv -p $(which python3) ~venvpy3
-        - source ~venvpy3/bin/activate
-      <<: *fleet_install_tasks
-      <<: *fleet_script_tasks
-      <<: *fleet_script_kind_istio_tasks
-      after_success:
-        - deactivate
-
-    - name: "kind gardener  Python 3.7 on xenial"
-      dist: xenial
-      language: python
-      python: 3.7
-      before_install:
-        - pip3 install virtualenv
-        - virtualenv -p $(which python3) ~venvpy3
-        - source ~venvpy3/bin/activate
-      <<: *fleet_install_tasks
-      <<: *fleet_script_tasks
-      <<: *fleet_script_kind_gardener_tasks
-      after_success:
-        - deactivate
-
-    - name: "kind  istio Python 3.7 on xenial"
-      dist: xenial
-      language: python
-      python: 3.7
-      before_install:
-        - pip3 install virtualenv
-        - virtualenv -p $(which python3) ~venvpy3
-        - source ~venvpy3/bin/activate
-      <<: *fleet_install_tasks
-      <<: *fleet_script_tasks
-      <<: *fleet_script_kind_istio_tasks
-      after_success:
-        - deactivate
-
-    - name: "kind  Python 3.7 on xenial"
-      dist: xenial
-      language: python
-      python: 3.7
-      before_install:
-        - pip3 install virtualenv
-        - virtualenv -p $(which python3) ~venvpy3
-        - source ~venvpy3/bin/activate
-      <<: *fleet_install_tasks
-      <<: *fleet_script_tasks
-      <<: *fleet_script_kind_tasks
-      after_success:
-        - deactivate
+    # - name: "kind gardener  Python 3.7 on bionic"
+    #   dist: bionic
+    #   arch: amd64
+    #   addons:
+    #     snaps:
+    #       - name: kubectl
+    #         confinement: classic # or devmode
+    #         channel: latest/stable # will be passed to --channel flag
+    #   language: python
+    #   python: 3.7
+    #   before_install:
+    #     - pip3 install virtualenv
+    #     - virtualenv -p $(which python3) ~venvpy3
+    #     - source ~venvpy3/bin/activate
+    #   <<: *fleet_install_tasks
+    #   <<: *fleet_script_tasks
+    #   <<: *fleet_script_kind_gardener_tasks
+    #   after_success:
+    #     - deactivate
+    #
+    # - name: "kind istio  Python 3.7 on bionic"
+    #   dist: bionic
+    #   arch: amd64
+    #   addons:
+    #     snaps:
+    #       - name: kubectl
+    #         confinement: classic # or devmode
+    #         channel: latest/stable # will be passed to --channel flag
+    #   language: python
+    #   python: 3.7
+    #   before_install:
+    #     - pip3 install virtualenv
+    #     - virtualenv -p $(which python3) ~venvpy3
+    #     - source ~venvpy3/bin/activate
+    #   <<: *fleet_install_tasks
+    #   <<: *fleet_script_tasks
+    #   <<: *fleet_script_kind_istio_tasks
+    #   after_success:
+    #     - deactivate
+    #
+    #
+    # - name: "kind  Python 3.7 on bionic"
+    #   dist: bionic
+    #   arch: amd64
+    #   addons:
+    #     snaps:
+    #       - name: kubectl
+    #         confinement: classic # or devmode
+    #         channel: latest/stable # will be passed to --channel flag
+    #   language: python
+    #   python: 3.7
+    #   before_install:
+    #     - pip3 install virtualenv
+    #     - virtualenv -p $(which python3) ~venvpy3
+    #     - source ~venvpy3/bin/activate
+    #   <<: *fleet_install_tasks
+    #   <<: *fleet_script_tasks
+    #   <<: *fleet_script_kind_istio_tasks
+    #   after_success:
+    #     - deactivate
+    #
+    # - name: "kind gardener  Python 3.7 on xenial"
+    #   dist: xenial
+    #   arch: amd64
+    #   addons:
+    #     snaps:
+    #       - name: kubectl
+    #         confinement: classic # or devmode
+    #         channel: latest/stable # will be passed to --channel flag
+    #   language: python
+    #   python: 3.7
+    #   before_install:
+    #     - pip3 install virtualenv
+    #     - virtualenv -p $(which python3) ~venvpy3
+    #     - source ~venvpy3/bin/activate
+    #   <<: *fleet_install_tasks
+    #   <<: *fleet_script_tasks
+    #   <<: *fleet_script_kind_gardener_tasks
+    #   after_success:
+    #     - deactivate
+    #
+    # - name: "kind  istio Python 3.7 on xenial"
+    #   dist: xenial
+    #   arch: amd64
+    #   addons:
+    #     snaps:
+    #       - name: kubectl
+    #         confinement: classic # or devmode
+    #         channel: latest/stable # will be passed to --channel flag
+    #   language: python
+    #   python: 3.7
+    #   before_install:
+    #     - pip3 install virtualenv
+    #     - virtualenv -p $(which python3) ~venvpy3
+    #     - source ~venvpy3/bin/activate
+    #   <<: *fleet_install_tasks
+    #   <<: *fleet_script_tasks
+    #   <<: *fleet_script_kind_istio_tasks
+    #   after_success:
+    #     - deactivate
+    #
+    # - name: "kind  Python 3.7 on xenial"
+    #   dist: xenial
+    #   arch: amd64
+    #   addons:
+    #     snaps:
+    #       - name: kubectl
+    #         confinement: classic # or devmode
+    #         channel: latest/stable # will be passed to --channel flag
+    #   language: python
+    #   python: 3.7
+    #   before_install:
+    #     - pip3 install virtualenv
+    #     - virtualenv -p $(which python3) ~venvpy3
+    #     - source ~venvpy3/bin/activate
+    #   <<: *fleet_install_tasks
+    #   <<: *fleet_script_tasks
+    #   <<: *fleet_script_kind_tasks
+    #   after_success:
+    #     - deactivate
 
     # - name: "Python 3.7 on bionic arm64" # package architecture (amd64) does not match system (arm64)
     #   os: linux
