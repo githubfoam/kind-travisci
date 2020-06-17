@@ -31,7 +31,7 @@ fleet_script_kind_storage_tasks : &fleet_script_kind_storage_tasks #If you are r
           # - sudo kubectl get pods -n default;
           # - sudo kubectl get pod -o wide #The IP column will contain the internal cluster IP address for each pod.
           # - sudo kubectl get service --all-namespaces # find a Service IP,list all services in all namespaces
-          - sudo make deploy-openesb
+          # - sudo make deploy-openesb
           # - sudo kind delete cluster --name openesb-testing
           # - echo "=============================openEBS============================================================="
           # - pushd $(pwd) && cd app

@@ -1,6 +1,4 @@
 #!/bin/bash
-# openesb component list
-#https://github.com/openebs/openebs/blob/master/k8s/openebs-operator.yaml
 
 echo "=============================deploy kind============================================================="
 - docker version
