@@ -5,6 +5,12 @@ Travis (.com) dev branch:
 [![Build Status](https://travis-ci.com/githubfoam/kind-travisci.svg?branch=master)](https://travis-ci.com/githubfoam/kind-travisci)  
 
 ~~~~
+kind is a tool for running local Kubernetes clusters using Docker container “nodes”.
+kind was primarily designed for testing Kubernetes itself, but may be used for local development or CI.
+https://kind.sigs.k8s.io/
+~~~~
+
+~~~~
 The Kubernetes command-line tool, kubectl, allows you to run commands against Kubernetes clusters
 https://kubernetes.io/docs/tasks/tools/install-kubectl/
 ~~~~
@@ -21,12 +27,6 @@ http://conntrack-tools.netfilter.org/
 Multicluster Installation
 Configure an Istio mesh spanning multiple Kubernetes clusters.
 https://istio.io/docs/setup/install/multicluster/
-~~~~
-
-~~~~
-kind is a tool for running local Kubernetes clusters using Docker container “nodes”.
-kind was primarily designed for testing Kubernetes itself, but may be used for local development or CI.
-https://kind.sigs.k8s.io/
 ~~~~
 
 ~~~~
