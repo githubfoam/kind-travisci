@@ -8,11 +8,11 @@ kubectl get pods --all-namespaces;
 kubectl get pods -n default;
 kubectl get pod -o wide #The IP column will contain the internal cluster IP address for each pod.
 kubectl get service --all-namespaces # find a Service IP,list all services in all namespaces
-# export DASHBOARDVERSION="2.0.0-beta8"
-export DASHBOARDVERSION="2.0.1"
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v$DASHBOARDVERSION/aio/deploy/recommended.yaml #deploy Dashboard
-kubectl get service --all-namespaces # find a Service IP,list all services in all namespaces-
 kubectl get sc #Check the storage Class
+
+helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/ # Add kubernetes-dashboard repository
+helm install kubernetes-dashboard/kubernetes-dashboard --name my-release # Deploy a Helm Release named "my-release" using the kubernetes-dashboard chart
+
 echo "===============================Waiting for dashboard to be ready==========================================================="
 for i in {1..60}; do # Timeout after 5 minutes, 60x5=300 secs
     if kubectl get pods --namespace=kubernetes-dashboard | grep Running ; then
@@ -33,4 +33,6 @@ echo $token #Display the token using the echo command and copy it to use for log
 
 kubectl get pods --all-namespaces
 kubectl get pod -n kubernetes-dashboard -o wide  --all-namespaces
+
+helm delete my-release #uninstall/delete the my-release deployment
 echo "=============================Dashboard============================================================="

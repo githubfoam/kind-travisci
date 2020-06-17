@@ -9,6 +9,8 @@ deploy-istio:
 	bash app/deploy-istio.sh
 deploy-dashboard:
 	bash app/deploy-dashboard.sh
+deploy-dashboard-helm:
+	bash app/deploy-dashboard-helm.sh
 push-image:
 	docker push $(IMAGE)
-.PHONY: deploy-kind deploy-openesb deploy-dashboard deploy-istio push-image
+.PHONY: deploy-kind deploy-openesb deploy-dashboard deploy-dashboard-helm deploy-istio push-image
