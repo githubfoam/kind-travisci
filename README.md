@@ -2,7 +2,7 @@
 kind pipeline
 
 Travis (.com) dev branch:
-[![Build Status](https://travis-ci.com/githubfoam/kind-travisci.svg?branch=dev)](https://travis-ci.com/githubfoam/kind-travisci)  
+[![Build Status](https://travis-ci.com/githubfoam/kind-travisci.svg?branch=master)](https://travis-ci.com/githubfoam/kind-travisci)  
 
 ~~~~
 The Kubernetes command-line tool, kubectl, allows you to run commands against Kubernetes clusters
