@@ -269,7 +269,7 @@ matrix:
       # <<: *fleet_script_kind_tasks
       # <<: *fleet_script_storage_tasks
       script:
-        - sudo make deploy-kind.sh
+        - sudo make deploy-kind
       # <<: *fleet_script_kind_tasks
       # <<: *fleet_script_storage_tasks
 
