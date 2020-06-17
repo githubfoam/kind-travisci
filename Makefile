@@ -7,7 +7,7 @@ deploy-kind:
 deploy-openesb:
 	bash app/deploy-openesb.sh
 
-deploy-openesb:
+deploy-istio:
 	bash app/deploy-istio.sh
 
 push-image:
