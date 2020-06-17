@@ -13,24 +13,26 @@ notifications:
 
 fleet_script_kind_storage_tasks : &fleet_script_kind_storage_tasks #If you are running minikube within a VM, consider using --driver=none
       script:
-          - docker version
-          - curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.8.1/kind-$(uname)-amd64
-          - chmod +x ./kind
-          - sudo mv ./kind /usr/local/bin/kind
-          - kind get clusters #see the list of kind clusters
-          - sudo kind get clusters
-          - sudo kubectl config get-contexts #kind is prefixed to the context and cluster names, for example: kind-istio-testing
+          - echo "=============================Inspection============================================================="
+          - sudo make deploy-kind
+          # - docker version
+          # - curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.8.1/kind-$(uname)-amd64
+          # - chmod +x ./kind
+          # - sudo mv ./kind /usr/local/bin/kind
+          # - kind get clusters #see the list of kind clusters
+          # - sudo kind get clusters
+          # - sudo kubectl config get-contexts #kind is prefixed to the context and cluster names, for example: kind-istio-testing
           - echo "=============================Inspection============================================================="
           # - sudo kubectl cluster-info dump #further debug and diagnose cluster problems
-          - sudo kubectl cluster-info
-          - sudo kubectl get pods --all-namespaces;
-          - sudo kubectl get pods -n default;
-          - sudo kubectl get pod -o wide #The IP column will contain the internal cluster IP address for each pod.
-          - sudo kubectl get service --all-namespaces # find a Service IP,list all services in all namespaces
-          - echo "=============================Inspection============================================================="
-          - sudo kind create cluster --name openesb-testing
-          - sudo kubectl config use-context kind-openesb-testing
+          # - sudo kind create cluster --name openesb-testing
+          # - sudo kubectl config use-context kind-openesb-testing
+          # - sudo kubectl cluster-info
+          # - sudo kubectl get pods --all-namespaces;
+          # - sudo kubectl get pods -n default;
+          # - sudo kubectl get pod -o wide #The IP column will contain the internal cluster IP address for each pod.
+          # - sudo kubectl get service --all-namespaces # find a Service IP,list all services in all namespaces
           - sudo make deploy-openesb
+          # - sudo kind delete cluster --name openesb-testing
           # - echo "=============================openEBS============================================================="
           # - pushd $(pwd) && cd app
           # - sudo kubectl apply -f https://openebs.github.io/charts/openebs-operator.yaml #install OpenEBS
@@ -75,7 +77,7 @@ fleet_script_kind_storage_tasks : &fleet_script_kind_storage_tasks #If you are r
           # - sudo kubectl get pods --namespace=openebs
           # - popd
           # - echo "=============================openEBS============================================================="
-          - sudo kind delete cluster --name openesb-testing
+          # - sudo kind delete cluster --name openesb-testing
 
 
 #https://istio.io/docs/setup/platform-setup/gardener/
