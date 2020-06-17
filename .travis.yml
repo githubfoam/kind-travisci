@@ -11,74 +11,21 @@ notifications:
   slack:
     on_failure: always
 
-fleet_script_kind_storage_tasks : &fleet_script_kind_storage_tasks #If you are running minikube within a VM, consider using --driver=none
+fleet_script_storage_tasks : &fleet_script_storage_tasks #If you are running minikube within a VM, consider using --driver=none
       script:
-          - echo "=============================Inspection============================================================="
+          - echo "=============================deploy-kind============================================================="
           # - sudo make deploy-kind
           - docker version
-          - curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.8.1/kind-$(uname)-amd64
+          - export KIND_VERSION="0.8.1"
+          # - curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.8.1/kind-$(uname)-amd64
+          - curl -Lo ./kind https://kind.sigs.k8s.io/dl/v$KIND_VERSION/kind-$(uname)-amd64
           - chmod +x ./kind
           - sudo mv ./kind /usr/local/bin/kind
           - kind get clusters #see the list of kind clusters
           - sudo kind get clusters
           - sudo kubectl config get-contexts #kind is prefixed to the context and cluster names, for example: kind-istio-testing
-          - echo "=============================Inspection============================================================="
-          # - sudo kubectl cluster-info dump #further debug and diagnose cluster problems
-          # - sudo kind create cluster --name openesb-testing
-          # - sudo kubectl config use-context kind-openesb-testing
-          # - sudo kubectl cluster-info
-          # - sudo kubectl get pods --all-namespaces;
-          # - sudo kubectl get pods -n default;
-          # - sudo kubectl get pod -o wide #The IP column will contain the internal cluster IP address for each pod.
-          # - sudo kubectl get service --all-namespaces # find a Service IP,list all services in all namespaces
-          - sudo make deploy-openesb
-          # - sudo kind delete cluster --name openesb-testing
-          # - echo "=============================openEBS============================================================="
-          # - pushd $(pwd) && cd app
-          # - sudo kubectl apply -f https://openebs.github.io/charts/openebs-operator.yaml #install OpenEBS
-          # - sudo kubectl get service --all-namespaces # find a Service IP,list all services in all namespaces
-          # - sudo kubectl get pods -n openebs -l openebs.io/component-name=openebs-localpv-provisioner #Observe localhost provisioner pod
-          # - sudo kubectl get sc #Check the storage Class
-          # openesb component list
-          #https://github.com/openebs/openebs/blob/master/k8s/openebs-operator.yaml
-          # - |
-          #   echo "Waiting for openebs-localpv-provisioner component to be ready ..."
-          #   for i in {1..60}; do # Timeout after 5 minutes, 150x5=300 secs
-          #       if sudo kubectl get pods --namespace=openebs -l openebs.io/component-name=openebs-localpv-provisioner | grep Running ; then
-          #         break
-          #       fi
-          #       sleep 5
-          #   done
-          # - |
-          #   echo "Waiting for maya-apiserver component to be ready ..."
-          #   for i in {1..60}; do # Timeout after 5 minutes, 150x5=300 secs
-          #       if sudo kubectl get pods --namespace=openebs -l openebs.io/component-name=maya-apiserver | grep Running ; then
-          #         break
-          #       fi
-          #       sleep 5
-          #   done
-          # - |
-          #   echo "Waiting for openebs-ndm-operator component to be ready ..."
-          #   for i in {1..60}; do # Timeout after 5 minutes, 150x5=300 secs
-          #       if sudo kubectl get pods --namespace=openebs -l openebs.io/component-name=openebs-ndm-operator | grep Running ; then
-          #         break
-          #       fi
-          #       sleep 5
-          #   done
-          # - |
-          #   echo "Waiting for openebs to be ready ..."
-          #   for i in {1..60}; do # Timeout after 2 minutes, 60x2=300 secs
-          #       if sudo kubectl get pods --namespace=openebs | grep Running ; then
-          #         break
-          #       fi
-          #       sleep 2
-          #   done
-          # - sudo kubectl get pods --all-namespaces
-          # - sudo kubectl get pods --namespace=openebs
-          # - popd
-          # - echo "=============================openEBS============================================================="
-          # - sudo kind delete cluster --name openesb-testing
-
+          - echo "=============================deploy-kind============================================================="
+          # - sudo make deploy-openesb
 
 #https://istio.io/docs/setup/platform-setup/gardener/
 #https://github.com/gardener/gardener/blob/master/docs/development/local_setup.md
@@ -120,17 +67,15 @@ fleet_script_gardener_macos_tasks : &fleet_script_gardener_macos_tasks #If you a
 
 #https://istio.io/docs/setup/platform-setup/gardener/
 #https://github.com/gardener/gardener/blob/master/docs/development/local_setup.md
-fleet_script_kind_gardener_tasks : &fleet_script_kind_gardener_tasks #If you are running minikube within a VM, consider using --driver=none
+fleet_script_dashboard_tasks : &fleet_script_dashboard_tasks #If you are running minikube within a VM, consider using --driver=none
       script:
           - curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.8.1/kind-$(uname)-amd64
           - chmod +x ./kind
           - sudo mv ./kind /usr/local/bin/kind
           - kind get clusters #see the list of kind clusters
-          - kind create cluster --name istio-testing #Create a cluster,By default, the cluster will be given the name kind
-          - kind get clusters
-          - sudo snap install kubectl --classic
+          # - sudo snap install kubectl --classic
           - kubectl config get-contexts #list the local Kubernetes contexts
-          - kubectl config use-context kind-istio-testing #run following command to set the current context for kubectl
+          - kubectl config use-context kind-dashboard-testing #run following command to set the current context for kubectl
           - kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-beta8/aio/deploy/recommended.yaml #deploy Dashboard
           - echo "===============================Waiting for Dashboard to be ready==========================================================="
           - |
@@ -148,10 +93,6 @@ fleet_script_kind_gardener_tasks : &fleet_script_kind_gardener_tasks #If you are
           - kubectl proxy & # Access Dashboard using the kubectl command-line tool by running the following command, Starting to serve on 127.0.0.1:8001
           # - kind delete cluster --name istio-testing #delete the existing cluster
 
-
-#https://istio.io/docs/setup/platform-setup/kind/
-#https://kind.sigs.k8s.io/docs/user/quick-start/
-#https://istio.io/docs/setup/getting-started/
 fleet_script_kind_istio_tasks : &fleet_script_kind_istio_tasks #If you are running minikube within a VM, consider using --driver=none
       script:
           - docker version
@@ -350,7 +291,9 @@ matrix:
         - source ~venvpy3/bin/activate
       <<: *fleet_install_tasks
       <<: *fleet_script_tasks
-      <<: *fleet_script_kind_storage_tasks
+      <<: *fleet_script_storage_tasks
+      script:
+        - sudo make deploy-openesb
       after_success:
         - deactivate
 
@@ -370,7 +313,7 @@ matrix:
     #     - source ~venvpy3/bin/activate
     #   <<: *fleet_install_tasks
     #   <<: *fleet_script_tasks
-    #   <<: *fleet_script_kind_gardener_tasks
+    #   <<: *fleet_script_dashboard_tasks
     #   after_success:
     #     - deactivate
     #
@@ -431,7 +374,7 @@ matrix:
     #     - source ~venvpy3/bin/activate
     #   <<: *fleet_install_tasks
     #   <<: *fleet_script_tasks
-    #   <<: *fleet_script_kind_gardener_tasks
+    #   <<: *fleet_script_dashboard_tasks
     #   after_success:
     #     - deactivate
     #
