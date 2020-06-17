@@ -18,63 +18,65 @@ fleet_script_kind_storage_tasks : &fleet_script_kind_storage_tasks #If you are r
           - chmod +x ./kind
           - sudo mv ./kind /usr/local/bin/kind
           - kind get clusters #see the list of kind clusters
-          - sudo kind create cluster --name openesb-testing
           - sudo kind get clusters
           - sudo kubectl config get-contexts #kind is prefixed to the context and cluster names, for example: kind-istio-testing
-          - sudo kubectl config use-context kind-openesb-testing
-          - echo "============================status check=============================================================="
+          - echo "=============================Inspection============================================================="
           # - sudo kubectl cluster-info dump #further debug and diagnose cluster problems
           - sudo kubectl cluster-info
           - sudo kubectl get pods --all-namespaces;
           - sudo kubectl get pods -n default;
-          - echo "=============================Inspection============================================================="
           - sudo kubectl get pod -o wide #The IP column will contain the internal cluster IP address for each pod.
           - sudo kubectl get service --all-namespaces # find a Service IP,list all services in all namespaces
-          - echo "=============================openEBS============================================================="
+          - echo "=============================Inspection============================================================="
+          - sudo kind create cluster --name openesb-testing
+          - sudo kubectl config use-context kind-openesb-testing
+          - sudo make deploy-openesb
+          # - echo "=============================openEBS============================================================="
           # - pushd $(pwd) && cd app
-          - sudo kubectl apply -f https://openebs.github.io/charts/openebs-operator.yaml #install OpenEBS
-          - sudo kubectl get service --all-namespaces # find a Service IP,list all services in all namespaces
-          - sudo kubectl get pods -n openebs -l openebs.io/component-name=openebs-localpv-provisioner #Observe localhost provisioner pod
-          - sudo kubectl get sc #Check the storage Class
+          # - sudo kubectl apply -f https://openebs.github.io/charts/openebs-operator.yaml #install OpenEBS
+          # - sudo kubectl get service --all-namespaces # find a Service IP,list all services in all namespaces
+          # - sudo kubectl get pods -n openebs -l openebs.io/component-name=openebs-localpv-provisioner #Observe localhost provisioner pod
+          # - sudo kubectl get sc #Check the storage Class
           # openesb component list
           #https://github.com/openebs/openebs/blob/master/k8s/openebs-operator.yaml
-          - |
-            echo "Waiting for openebs-localpv-provisioner component to be ready ..."
-            for i in {1..60}; do # Timeout after 5 minutes, 150x5=300 secs
-                if sudo kubectl get pods --namespace=openebs -l openebs.io/component-name=openebs-localpv-provisioner | grep Running ; then
-                  break
-                fi
-                sleep 5
-            done
-          - |
-            echo "Waiting for maya-apiserver component to be ready ..."
-            for i in {1..60}; do # Timeout after 5 minutes, 150x5=300 secs
-                if sudo kubectl get pods --namespace=openebs -l openebs.io/component-name=maya-apiserver | grep Running ; then
-                  break
-                fi
-                sleep 5
-            done
-          - |
-            echo "Waiting for openebs-ndm-operator component to be ready ..."
-            for i in {1..60}; do # Timeout after 5 minutes, 150x5=300 secs
-                if sudo kubectl get pods --namespace=openebs -l openebs.io/component-name=openebs-ndm-operator | grep Running ; then
-                  break
-                fi
-                sleep 5
-            done
-          - |
-            echo "Waiting for openebs to be ready ..."
-            for i in {1..60}; do # Timeout after 2 minutes, 60x2=300 secs
-                if sudo kubectl get pods --namespace=openebs | grep Running ; then
-                  break
-                fi
-                sleep 2
-            done
-          - sudo kubectl get pods --all-namespaces
-          - sudo kubectl get pods --namespace=openebs
+          # - |
+          #   echo "Waiting for openebs-localpv-provisioner component to be ready ..."
+          #   for i in {1..60}; do # Timeout after 5 minutes, 150x5=300 secs
+          #       if sudo kubectl get pods --namespace=openebs -l openebs.io/component-name=openebs-localpv-provisioner | grep Running ; then
+          #         break
+          #       fi
+          #       sleep 5
+          #   done
+          # - |
+          #   echo "Waiting for maya-apiserver component to be ready ..."
+          #   for i in {1..60}; do # Timeout after 5 minutes, 150x5=300 secs
+          #       if sudo kubectl get pods --namespace=openebs -l openebs.io/component-name=maya-apiserver | grep Running ; then
+          #         break
+          #       fi
+          #       sleep 5
+          #   done
+          # - |
+          #   echo "Waiting for openebs-ndm-operator component to be ready ..."
+          #   for i in {1..60}; do # Timeout after 5 minutes, 150x5=300 secs
+          #       if sudo kubectl get pods --namespace=openebs -l openebs.io/component-name=openebs-ndm-operator | grep Running ; then
+          #         break
+          #       fi
+          #       sleep 5
+          #   done
+          # - |
+          #   echo "Waiting for openebs to be ready ..."
+          #   for i in {1..60}; do # Timeout after 2 minutes, 60x2=300 secs
+          #       if sudo kubectl get pods --namespace=openebs | grep Running ; then
+          #         break
+          #       fi
+          #       sleep 2
+          #   done
+          # - sudo kubectl get pods --all-namespaces
+          # - sudo kubectl get pods --namespace=openebs
           # - popd
+          # - echo "=============================openEBS============================================================="
           - sudo kind delete cluster --name openesb-testing
-          - echo "=============================openEBS============================================================="
+
 
 #https://istio.io/docs/setup/platform-setup/gardener/
 #https://github.com/gardener/gardener/blob/master/docs/development/local_setup.md
