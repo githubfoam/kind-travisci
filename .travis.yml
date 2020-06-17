@@ -264,8 +264,8 @@ matrix:
         - pip3 install virtualenv
         - virtualenv -p $(which python3) ~venvpy3
         - source ~venvpy3/bin/activate
-      <<: *fleet_install_tasks
-      <<: *fleet_script_tasks
+      # <<: *fleet_install_tasks
+      # <<: *fleet_script_tasks
       # <<: *fleet_script_kind_tasks
       # <<: *fleet_script_storage_tasks
       script:
