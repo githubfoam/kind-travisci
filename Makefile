@@ -7,7 +7,7 @@ deploy-openesb:
 	bash app/deploy-openesb.sh
 deploy-istio:
 	bash app/deploy-istio.sh
-deploy-istio:
+deploy-dashboard:
 	bash app/deploy-dashboard.sh
 push-image:
 	docker push $(IMAGE)
