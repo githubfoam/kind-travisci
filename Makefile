@@ -7,6 +7,9 @@ deploy-kind:
 deploy-openesb:
 	bash app/deploy-openesb.sh
 
+deploy-openesb:
+	bash app/deploy-istio.sh
+
 push-image:
 	docker push $(IMAGE)
 
