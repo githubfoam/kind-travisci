@@ -80,6 +80,7 @@ fleet_script_kind_gardener_tasks : &fleet_script_kind_gardener_tasks #If you are
           # - kind delete cluster --name istio-testing #delete the existing cluster
 
 
+#https://istio.io/docs/setup/platform-setup/kind/
 #https://kind.sigs.k8s.io/docs/user/quick-start/
 #https://istio.io/docs/setup/getting-started/
 fleet_script_kind_istio_tasks : &fleet_script_kind_istio_tasks #If you are running minikube within a VM, consider using --driver=none
