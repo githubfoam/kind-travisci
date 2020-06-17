@@ -266,9 +266,10 @@ matrix:
         - source ~venvpy3/bin/activate
       # <<: *fleet_install_tasks
       # <<: *fleet_script_tasks
-      <<: *fleet_script_kind_tasks
-      <<: *fleet_script_storage_tasks
-      # script:
+      # <<: *fleet_script_kind_tasks
+      # <<: *fleet_script_storage_tasks
+      script:
+        - sudo make deploy-kind.sh
       # <<: *fleet_script_kind_tasks
       # <<: *fleet_script_storage_tasks
 

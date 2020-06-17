@@ -13,4 +13,4 @@ deploy-istio:
 push-image:
 	docker push $(IMAGE)
 
-.PHONY: deploy-kind deploy-openesb push-image
+.PHONY: deploy-kind deploy-openesb deploy-istio push-image
