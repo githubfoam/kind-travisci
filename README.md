@@ -4,6 +4,31 @@ kind pipeline
 Travis (.com) dev branch:
 [![Build Status](https://travis-ci.com/githubfoam/kind-travisci.svg?branch=dev)](https://travis-ci.com/githubfoam/kind-travisci)  
 
+smoke tests openEBS
+~~~~
+NAMESPACE              NAME                                                      READY   STATUS    RESTARTS   AGE
+openebs              maya-apiserver-5d87746c75-27vx6                         1/1     Running             0          11m
+
+openebs              openebs-admission-server-766f5d7c48-9wnm8               1/1     Running             0          11m
+
+openebs              openebs-localpv-provisioner-695ffd78d6-z8h2t            1/1     Running             0          11m
+
+openebs              openebs-ndm-operator-58ccd48f9d-gddnq                   1/1     Running             1          11m
+
+openebs              openebs-ndm-rstjm                                       0/1     ContainerCreating   0          10m
+
+openebs              openebs-provisioner-64c9565ccb-tqlpt                    1/1     Running             0          11m
+
+openebs              openebs-snapshot-operator-cf5cc6c54-62xf9               2/2     Running             0          11m
+~~~~
+
+smoke tests k8s dashboard
+~~~~
+NAMESPACE              NAME                                                      READY   STATUS    RESTARTS   AGE
+kubernetes-dashboard   dashboard-metrics-scraper-6b4884c9d5-5l8dl                1/1     Running   0          26s
+
+kubernetes-dashboard   kubernetes-dashboard-7bfbb48676-4pdck                     1/1     Running   0          26s
+~~~~
 ~~~~
 The Kubernetes command-line tool, kubectl, allows you to run commands against Kubernetes clusters
 https://kubernetes.io/docs/tasks/tools/install-kubectl/
