@@ -184,7 +184,40 @@ matrix:
   fast_finish: true
   include:
 
-    - name: "openesb kind Python 3.7 on bionic" #OK
+    - name: "kind w snapped kubectl helm Python 3.7 on bionic" #OK
+      dist: bionic
+      arch: amd64
+      addons:
+        snaps:
+          - name: kubectl
+            confinement: classic # or devmode
+            channel: latest/stable # will be passed to --channel flag
+          - name: helm
+            confinement: classic # or devmode
+            channel: latest/stable # will be passed to --channel flag
+      language: python
+      python: 3.7
+      before_install:
+        - pip3 install virtualenv
+        - virtualenv -p $(which python3) ~venvpy3
+        - source ~venvpy3/bin/activate
+        - pip install -r requirements.txt
+      # <<: *fleet_install_tasks
+      # <<: *fleet_script_tasks
+      script:
+        - sudo make deploy-kind
+        # - sudo kind create cluster --name openesb-testing
+        # - sudo kubectl config use-context kind-openesb-testing
+        # - sudo make deploy-openesb
+        # - sudo kind delete cluster --name openesb-testing
+        # - sudo kind create cluster --name dashboard-testing
+        # - sudo kubectl config use-context kind-dashboard-testing
+        # - sudo make deploy-dashboard
+        # - sudo kind delete cluster --name dashboard-testing
+      after_success:
+        - deactivate
+
+    - name: "openesb kind w snapped kubectl helm Python 3.7 on bionic" #OK
       dist: bionic
       arch: amd64
       addons:
@@ -209,6 +242,38 @@ matrix:
         - sudo kubectl config use-context kind-openesb-testing
         - sudo make deploy-openesb
         - sudo kind delete cluster --name openesb-testing
+        # - sudo kind create cluster --name dashboard-testing
+        # - sudo kubectl config use-context kind-dashboard-testing
+        # - sudo make deploy-dashboard
+        # - sudo kind delete cluster --name dashboard-testing
+      after_success:
+        - deactivate
+
+    - name: "k8s dashboard kind w snapped kubectl helm Python 3.7 on bionic" #OK
+      dist: bionic
+      arch: amd64
+      addons:
+        snaps:
+          - name: kubectl
+            confinement: classic # or devmode
+            channel: latest/stable # will be passed to --channel flag
+          - name: helm
+            confinement: classic # or devmode
+            channel: latest/stable # will be passed to --channel flag
+      language: python
+      python: 3.7
+      before_install:
+        - pip3 install virtualenv
+        - virtualenv -p $(which python3) ~venvpy3
+        - source ~venvpy3/bin/activate
+      <<: *fleet_install_tasks
+      <<: *fleet_script_tasks
+      script:
+        - sudo make deploy-kind
+        # - sudo kind create cluster --name openesb-testing
+        # - sudo kubectl config use-context kind-openesb-testing
+        # - sudo make deploy-openesb
+        # - sudo kind delete cluster --name openesb-testing
         - sudo kind create cluster --name dashboard-testing
         - sudo kubectl config use-context kind-dashboard-testing
         - sudo make deploy-dashboard
