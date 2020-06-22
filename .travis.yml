@@ -1,262 +1,88 @@
 ---
 sudo: required
 dist: bionic
-env:
-  global:
-  - KUBECTL_VERSION=1.18.3
-  - KUBERNETES_VERSION=1.18.3
-  - KUBECONFIG=$HOME/.kube/config
 
 notifications:
   slack:
     on_failure: always
 
-
-#https://istio.io/docs/setup/platform-setup/gardener/
-#https://github.com/gardener/gardener/blob/master/docs/development/local_setup.md
-fleet_script_kind_gardener_tasks : &fleet_script_kind_gardener_tasks #If you are running minikube within a VM, consider using --driver=none
-      script:
-          - curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.8.1/kind-$(uname)-amd64
-          - chmod +x ./kind
-          - sudo mv ./kind /usr/local/bin/kind
-          - kind get clusters #see the list of kind clusters
-          - kind create cluster --name istio-testing #Create a cluster,By default, the cluster will be given the name kind
-          - kind get clusters
-          - sudo snap install kubectl --classic
-          - kubectl config get-contexts #list the local Kubernetes contexts
-          - kubectl config use-context kind-istio-testing #run following command to set the current context for kubectl
-          - kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-beta8/aio/deploy/recommended.yaml #deploy Dashboard
-          - echo "===============================Waiting for Dashboard to be ready==========================================================="
-          - |
-            for i in {1..150}; do # Timeout after 5 minutes, 150x2=300 secs
-              if kubectl get pods --namespace=kubernetes-dashboard | grep Running ; then
-                break
-              fi
-              sleep 2
-            done
-          - kubectl get pod -n kubernetes-dashboard #Verify that Dashboard is deployed and running
-          - kubectl create clusterrolebinding default-admin --clusterrole cluster-admin --serviceaccount=default:default #Create a ClusterRoleBinding to provide admin access to the newly created cluster
-          #To login to Dashboard, you need a Bearer Token. Use the following command to store the token in a variable
-          - token=$(kubectl get secrets -o jsonpath="{.items[?(@.metadata.annotations['kubernetes\.io/service-account\.name']=='default')].data.token}"|base64 --decode)
-          - echo $token #Display the token using the echo command and copy it to use for logging into Dashboard.
-          - kubectl proxy & # Access Dashboard using the kubectl command-line tool by running the following command, Starting to serve on 127.0.0.1:8001
-          # - kind delete cluster --name istio-testing #delete the existing cluster
-
-
-#https://kind.sigs.k8s.io/docs/user/quick-start/
-#https://istio.io/docs/setup/getting-started/
-fleet_script_kind_istio_tasks : &fleet_script_kind_istio_tasks #If you are running minikube within a VM, consider using --driver=none
-      script:
-          - docker version
-          - curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.8.1/kind-$(uname)-amd64
-          - chmod +x ./kind
-          - sudo mv ./kind /usr/local/bin/kind
-          - kind get clusters #see the list of kind clusters
-          - kind create cluster --name istio-testing #Create a cluster,By default, the cluster will be given the name kind
-          - kind get clusters
-          - sudo snap install kubectl --classic
-          - kubectl config get-contexts #list the local Kubernetes contexts
-          - kubectl config use-context kind-istio-testing #run following command to set the current context for kubectl
-          - kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-beta8/aio/deploy/recommended.yaml #deploy Dashboard
-          - echo "===============================Waiting for Dashboard to be ready==========================================================="
-          - kubectl get service --all-namespaces #list all services in all namespace
-          - |
-            for i in {1..60}; do # Timeout after 5 minutes, 60x2=120 secs, 2 mins
-              if kubectl get pods --namespace=kubernetes-dashboard |grep Running && \
-                 kubectl get pods --namespace=dashboard-metrics-scraper |grep Running ; then
-                break
-              fi
-              sleep 2
-            done
-          - kubectl get pod -n kubernetes-dashboard #Verify that Dashboard is deployed and running
-          - kubectl create clusterrolebinding default-admin --clusterrole cluster-admin --serviceaccount=default:default #Create a ClusterRoleBinding to provide admin access to the newly created cluster
-          #To login to Dashboard, you need a Bearer Token. Use the following command to store the token in a variable
-          - token=$(kubectl get secrets -o jsonpath="{.items[?(@.metadata.annotations['kubernetes\.io/service-account\.name']=='default')].data.token}"|base64 --decode)
-          - echo $token #Display the token using the echo command and copy it to use for logging into Dashboard.
-          - kubectl proxy & # Access Dashboard using the kubectl command-line tool by running the following command, Starting to serve on 127.0.0.1:8001
-          - echo "===============================Install istio==========================================================="
-          - 'curl -L https://istio.io/downloadIstio | sh -' #Download Istio
-          -  cd istio-* #Move to the Istio package directory. For example, if the package is istio-1.6.0
-          - export PATH=$PWD/bin:$PATH #Add the istioctl client to your path, The istioctl client binary in the bin/ directory.
-          #precheck inspects a Kubernetes cluster for Istio install requirements
-          - istioctl experimental precheck #https://istio.io/docs/reference/commands/istioctl/#istioctl-experimental-precheck
-          #Begin the Istio pre-installation verification check
-          # - istioctl verify-install #Error: could not load IstioOperator from cluster: the server could not find the requested resource.  Use --filename
-          - istioctl version
-          - istioctl manifest apply --set profile=demo #Install Istio, use the demo configuration profile
-          - kubectl label namespace default istio-injection=enabled #Add a namespace label to instruct Istio to automatically inject Envoy sidecar proxies when you deploy your application later
-          - kubectl apply -f samples/bookinfo/platform/kube/bookinfo.yaml #Deploy the Bookinfo sample application:
-          - kubectl get service --all-namespaces #list all services in all namespace
-          - kubectl get services #The application will start. As each pod becomes ready, the Istio sidecar will deploy along with it.
-          - kubectl get pods
-          - |
-            for i in {1..60}; do # Timeout after 5 minutes, 60x2=120 secs, 2 mins
-              if kubectl get pods --namespace=istio-system |grep Running ; then
-                break
-              fi
-              sleep 2
-            done
-          - kubectl get service --all-namespaces #list all services in all namespace
-          - kind delete cluster --name istio-testing #delete the existing cluster
-
-fleet_script_kind_tasks : &fleet_script_kind_tasks #If you are running minikube within a VM, consider using --driver=none
-      script:
-          - docker version
-          - curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.8.1/kind-$(uname)-amd64
-          - chmod +x ./kind
-          - sudo mv ./kind /usr/local/bin/kind
-          - kind get clusters #see the list of kind clusters
-          - kind create cluster --name istio-testing #Create a cluster,By default, the cluster will be given the name kind
-          - kind get clusters
-          - sudo snap install kubectl --classic
-          - kubectl config get-contexts #list the local Kubernetes contexts
-          - kubectl config use-context kind-istio-testing #run following command to set the current context for kubectl
-          - kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-beta8/aio/deploy/recommended.yaml #deploy Dashboard
-          - echo "===============================Waiting for Dashboard to be ready==========================================================="
-          - kubectl get service --all-namespaces #list all services in all namespace
-          - |
-            for i in {1..60}; do # Timeout after 5 minutes, 60x2=120 secs, 2 mins
-              if kubectl get pods --namespace=kubernetes-dashboard |grep Running && \
-                 kubectl get pods --namespace=dashboard-metrics-scraper |grep Running ; then
-                break
-              fi
-              sleep 2
-            done
-          - kubectl get pod -n kubernetes-dashboard #Verify that Dashboard is deployed and running
-          - kubectl create clusterrolebinding default-admin --clusterrole cluster-admin --serviceaccount=default:default #Create a ClusterRoleBinding to provide admin access to the newly created cluster
-          #To login to Dashboard, you need a Bearer Token. Use the following command to store the token in a variable
-          - token=$(kubectl get secrets -o jsonpath="{.items[?(@.metadata.annotations['kubernetes\.io/service-account\.name']=='default')].data.token}"|base64 --decode)
-          - echo $token #Display the token using the echo command and copy it to use for logging into Dashboard.
-          - kubectl proxy & # Access Dashboard using the kubectl command-line tool by running the following command, Starting to serve on 127.0.0.1:8001
-
-fleet_script_tasks : &fleet_script_tasks
-      script:
-        - python --version
-fleet_install_tasks : &fleet_install_tasks
-      install:
-        - pip install -r requirements.txt
-
-
 matrix:
   fast_finish: true
   include:
 
-    - name: "kind gardener  Python 3.7 on bionic"
+    - name: "kind w snapped kubectl helm Python 3.7 on bionic" #OK
       dist: bionic
+      arch: amd64
+      addons:
+        snaps:
+          - name: kubectl
+            confinement: classic
+            channel: latest/stable
+          - name: helm
+            confinement: classic
+            channel: latest/stable
       language: python
       python: 3.7
       before_install:
         - pip3 install virtualenv
         - virtualenv -p $(which python3) ~venvpy3
         - source ~venvpy3/bin/activate
-      <<: *fleet_install_tasks
-      <<: *fleet_script_tasks
-      <<: *fleet_script_kind_gardener_tasks
+        - pip install -r requirements.txt
+      script:
+        - sudo make deploy-kind
       after_success:
         - deactivate
 
-    - name: "kind istio  Python 3.7 on bionic"
+    - name: "openesb kind w snapped kubectl helm Python 3.7 on bionic" #OK
       dist: bionic
+      arch: amd64
+      addons:
+        snaps:
+          - name: kubectl
+            confinement: classic
+            channel: latest/stable
+          - name: helm
+            confinement: classic
+            channel: latest/stable
       language: python
       python: 3.7
       before_install:
         - pip3 install virtualenv
         - virtualenv -p $(which python3) ~venvpy3
         - source ~venvpy3/bin/activate
-      <<: *fleet_install_tasks
-      <<: *fleet_script_tasks
-      <<: *fleet_script_kind_istio_tasks
+        - pip install -r requirements.txt
+      script:
+        - sudo make deploy-kind
+        - sudo kind create cluster --name openesb-testing
+        - sudo kubectl config use-context kind-openesb-testing
+        - sudo make deploy-openesb
+        - sudo kind delete cluster --name openesb-testing
       after_success:
         - deactivate
 
-
-    - name: "kind  Python 3.7 on bionic"
+    - name: "k8s dashboard kind w snapped kubectl helm Python 3.7 on bionic" #OK
       dist: bionic
+      arch: amd64
+      addons:
+        snaps:
+          - name: kubectl
+            confinement: classic
+            channel: latest/stable
+          - name: helm
+            confinement: classic
+            channel: latest/stable
       language: python
       python: 3.7
       before_install:
         - pip3 install virtualenv
         - virtualenv -p $(which python3) ~venvpy3
         - source ~venvpy3/bin/activate
-      <<: *fleet_install_tasks
-      <<: *fleet_script_tasks
-      <<: *fleet_script_kind_istio_tasks
-      after_success:
-        - deactivate
-
-    - name: "kind gardener  Python 3.7 on xenial"
-      dist: xenial
-      language: python
-      python: 3.7
-      before_install:
-        - pip3 install virtualenv
-        - virtualenv -p $(which python3) ~venvpy3
-        - source ~venvpy3/bin/activate
-      <<: *fleet_install_tasks
-      <<: *fleet_script_tasks
-      <<: *fleet_script_kind_gardener_tasks
-      after_success:
-        - deactivate
-
-    - name: "kind  istio Python 3.7 on xenial"
-      dist: xenial
-      language: python
-      python: 3.7
-      before_install:
-        - pip3 install virtualenv
-        - virtualenv -p $(which python3) ~venvpy3
-        - source ~venvpy3/bin/activate
-      <<: *fleet_install_tasks
-      <<: *fleet_script_tasks
-      <<: *fleet_script_kind_istio_tasks
-      after_success:
-        - deactivate
-
-    - name: "kind  Python 3.7 on xenial"
-      dist: xenial
-      language: python
-      python: 3.7
-      before_install:
-        - pip3 install virtualenv
-        - virtualenv -p $(which python3) ~venvpy3
-        - source ~venvpy3/bin/activate
-      <<: *fleet_install_tasks
-      <<: *fleet_script_tasks
-      <<: *fleet_script_kind_tasks
-      after_success:
-        - deactivate
-
-    - name: "kind brew Python 2.7.17 on macOS xcode10.2"
-      os: osx
-      osx_image: xcode10.2
-      language: shell
-      before_install:
-        - pip install virtualenv
-        - virtualenv -p $(which python2) ~venvpy2
-        - source ~venvpy2/bin/activate
-        # Install kind via brew
-        - /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"  #Install brew
-        - brew install kind
-      <<: *fleet_install_tasks
-      <<: *fleet_script_tasks
-      after_success:
-        - deactivate
-
-    - name: "kind chocolatey Python 3.8 on Windows"
-      os: windows
-      language: shell
-      env:
-        - PATH=/c/Python38:/c/Python38/Scripts:$PATH
-      before_install:
-        - choco install python --version 3.8.1
-        - pip install virtualenv
-        - virtualenv $HOME/venv
-        - source $HOME/venv/Scripts/activate
-        # Install kind via chocolatey
-        # - Get-ExecutionPolicy #If it returns Restricted, then run Set-ExecutionPolicy AllSigned or Set-ExecutionPolicy Bypass -Scope Process.
-        # - Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
-        - choco install kind
-      <<: *fleet_install_tasks
-      <<: *fleet_script_tasks
+        - pip install -r requirements.txt
+      script:
+        - sudo make deploy-kind
+        - sudo kind create cluster --name dashboard-testing
+        - sudo kubectl config use-context kind-dashboard-testing
+        - sudo make deploy-dashboard
+        - sudo kind delete cluster --name dashboard-testing
       after_success:
         - deactivate
