@@ -57,6 +57,21 @@ kubectl rollout restart -n $CILIUM_NAMESPACE ds/cilium
 # pick one Cilium instance and validate that Hubble is properly configured to listen on a UNIX domain socket
 kubectl exec -n $CILIUM_NAMESPACE -t ds/cilium -- hubble observe
 
+kubectl get pods --all-namespaces
+kubectl get pods -n $CILIUM_NAMESPACE
+kubectl get pod -o wide #The IP column will contain the internal cluster IP address for each pod.
+echo echo "Waiting for cilium to be ready ..."
+for i in {1..60}; do # Timeout after 3 minutes, 60x5=300 secs
+     if kubectl get pods --namespace=$CILIUM_NAMESPACE  | grep ContainerCreating ; then
+         sleep 5
+     else
+         break
+     fi
+done
+kubectl get pods --all-namespaces
+kubectl get pods -n $CILIUM_NAMESPACE
+kubectl get pod -o wide #The IP column will contain the internal cluster IP address for each pod.
+
 # validate that Hubble Relay is running, install the hubble CLI
 export HUBBLE_VERSION=$(curl -s https://raw.githubusercontent.com/cilium/hubble/master/stable.txt)
 curl -LO "https://github.com/cilium/hubble/releases/download/$HUBBLE_VERSION/hubble-linux-amd64.tar.gz"
@@ -64,6 +79,7 @@ curl -LO "https://github.com/cilium/hubble/releases/download/$HUBBLE_VERSION/hub
 sha256sum --check hubble-linux-amd64.tar.gz.sha256sum
 # move the hubble CLI to a directory listed in the $PATH environment variable
 tar zxf hubble-linux-amd64.tar.gz &&  mv hubble /usr/local/bin
+
 #set up a port forwarding for hubble-relay service and run hubble observe command
 kubectl port-forward -n $CILIUM_NAMESPACE svc/hubble-relay 4245:80 &
 hubble observe --server localhost:4245

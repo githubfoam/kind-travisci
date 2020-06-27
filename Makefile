@@ -3,6 +3,8 @@ APP:="app/deploy-openesb.sh"
 
 deploy-kind:
 	bash deploy-kind.sh
+deploy-cilium-cluster-mesh:
+	bash app/deploy-cilium-cluster-mesh.sh
 deploy-cilium-hubble-dist:
 	bash app/deploy-cilium-hubble-dist.sh
 deploy-cilium-hubble-local:
