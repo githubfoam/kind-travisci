@@ -39,3 +39,14 @@ done
 kubectl apply -f https://raw.githubusercontent.com/cilium/cilium/HEAD/examples/kubernetes/connectivity-check/connectivity-check.yaml
 # Specify the namespace in which Cilium is installed as CILIUM_NAMESPACE environment variable
 export CILIUM_NAMESPACE=kube-system
+
+echo "=============================Hubble local mode============================================================="
+#local mode
+helm upgrade cilium ./cilium \
+   --namespace $CILIUM_NAMESPACE \
+   --reuse-values \
+   --set global.hubble.enabled=true \
+   --set global.hubble.metrics.enabled="{dns,drop,tcp,flow,port-distribution,icmp,http}"
+
+# Restart the Cilium daemonset to allow Cilium agent to pick up the ConfigMap changes
+kubectl rollout restart -n $CILIUM_NAMESPACE ds/cilium

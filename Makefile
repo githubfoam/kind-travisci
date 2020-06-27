@@ -3,6 +3,10 @@ APP:="app/deploy-openesb.sh"
 
 deploy-kind:
 	bash deploy-kind.sh
+deploy-cilium-hubble-dist:
+	bash app/deploy-cilium-hubble-dist.sh
+deploy-cilium-hubble-local:
+	bash app/deploy-cilium-hubble-local.sh
 deploy-cilium:
 	bash app/deploy-cilium.sh
 deploy-kubeflow:
