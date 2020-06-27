@@ -205,7 +205,7 @@ matrix:
         - pip install -r requirements.txt
       script:
         - sudo make deploy-kind
-        - sudo kind create cluster --config=kind-config.yaml
+        - sudo kind create cluster --config=app/kind-config.yaml
         - sudo kubectl cluster-info --context kind-kind
         # - sudo kind create cluster --name cilium-testing
         # - sudo kubectl config use-context kind-cilium-testing
