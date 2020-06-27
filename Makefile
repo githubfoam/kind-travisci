@@ -3,6 +3,8 @@ APP:="app/deploy-openesb.sh"
 
 deploy-kind:
 	bash deploy-kind.sh
+deploy-kubeflow:
+	bash app/deploy-kubeflow.sh
 deploy-openesb:
 	bash app/deploy-openesb.sh
 deploy-weavescope:
