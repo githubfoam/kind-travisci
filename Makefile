@@ -5,6 +5,8 @@ deploy-kind:
 	bash deploy-kind.sh
 deploy-openesb:
 	bash app/deploy-openesb.sh
+deploy-weavescope:
+	bash app/deploy-weavescope.sh
 deploy-istio:
 	bash app/deploy-istio.sh
 deploy-dashboard:
