@@ -4,6 +4,28 @@ kind pipeline
 Travis (.com) dev branch:
 [![Build Status](https://travis-ci.com/githubfoam/kind-travisci.svg?branch=dev)](https://travis-ci.com/githubfoam/kind-travisci)  
 
+~~~~
+Cluster Mesh
+simulate Cluster Mesh in a sandbox
+https://docs.cilium.io/en/stable/gettingstarted/kind/
+~~~~
+~~~~
+Hubble
+Hubble is a fully distributed networking and security observability platform for cloud native workloads. It is built on top of Cilium and eBPF to enable deep visibility into the communication and behavior of services as well as the networking infrastructure in a completely transparent manner.
+https://docs.cilium.io/en/stable/gettingstarted/kind/
+~~~~
+
+~~~~
+cilium kind
+uses kind to demonstrate deployment and operation of Cilium in a multi-node Kubernetes cluster running locally on Docker.
+https://docs.cilium.io/en/stable/gettingstarted/kind/
+~~~~
+~~~~
+Weave Scope
+https://www.weave.works/oss/scope/
+Kubeflow Fairing
+https://www.kubeflow.org/docs/fairing/
+~~~~
 smoke tests openEBS
 ~~~~
 NAMESPACE              NAME                                                      READY   STATUS    RESTARTS   AGE
@@ -41,12 +63,6 @@ http://conntrack-tools.netfilter.org/
 ~~~~
 
 
-
-~~~~
-Multicluster Installation
-Configure an Istio mesh spanning multiple Kubernetes clusters.
-https://istio.io/docs/setup/install/multicluster/
-~~~~
 
 ~~~~
 kind is a tool for running local Kubernetes clusters using Docker container “nodes”.
