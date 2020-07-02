@@ -1,11 +1,6 @@
 ---
 sudo: required
 dist: bionic
-# env:
-#   global:
-#   - KUBECTL_VERSION=1.18.3
-#   - KUBERNETES_VERSION=1.18.3
-#   - KUBECONFIG=$HOME/.kube/config
 
 notifications:
   slack:
@@ -48,14 +43,6 @@ fleet_script_gardener_macos_tasks : &fleet_script_gardener_macos_tasks #If you a
         - chmod +x ./kubectl #Make the kubectl binary executable
         - sudo mv ./kubectl /usr/local/bin/kubectl #Move the binary in to your PATH
         - kubectl version --client #Test to ensure the version you installed is up-to-date
-
-# fleet_script_tasks : &fleet_script_tasks
-#       script:
-#         - python --version
-# fleet_install_tasks : &fleet_install_tasks
-#       install:
-#         - pip install -r requirements.txt
-
 
 matrix:
   fast_finish: true
