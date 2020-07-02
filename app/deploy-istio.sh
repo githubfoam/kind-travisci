@@ -98,7 +98,9 @@ export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT #Set GATEWAY_URL
 
 #View the dashboard
 #istioctl dashboard kiali #optional dashboards installed by the demo installation,Access the Kiali dashboard. The default user name is admin and default password is admin
-istioctl dashboard kiali &
+#istioctl dashboard kiali
+#istioctl dashboard kiali &
+istioctl dashboard kiali &>/dev/null
 
 #Uninstall
 #Cleanup #https://istio.io/latest/docs/examples/bookinfo/#cleanup
@@ -155,9 +157,3 @@ kubectl get pods              #-- the Bookinfo pods should be deleted
 #       exit ${ret}
 #     fi
 #   fi
-#   echo "Application cleanup successful"
-# - kubectl get virtualservices   #-- there should be no virtual services
-# - kubectl get destinationrules  #-- there should be no destination rules
-# - kubectl get gateway           #-- there should be no gateway
-# - kubectl get pods              #-- the Bookinfo pods should be deleted
-#Bookinfo cleanup ends
