@@ -46,8 +46,10 @@ for i in {1..60}; do # Timeout after 5 minutes, 60x2=120 secs, 2 mins
     sleep 2
 done
 kubectl get service --all-namespaces #list all services in all namespace
+
 # see if the app is running inside the cluster and serving HTML pages by checking for the page title in the response
-kubectl exec $(kubectl get pod -l app=ratings -o jsonpath='{.items[0].metadata.name}') -c ratings -- curl productpage:9080/productpage | grep -o "<title>.*</title>"
+#error: unable to upgrade connection: container not found ("ratings")
+#kubectl exec $(kubectl get pod -l app=ratings -o jsonpath='{.items[0].metadata.name}') -c ratings -- curl productpage:9080/productpage | grep -o "<title>.*</title>"
 #interactive shell
 #kubectl exec -it $(kubectl get pod -l app=ratings -o jsonpath='{.items[0].metadata.name}') -c ratings -- curl productpage:9080/productpage | grep -o "<title>.*</title>"
 # - |
@@ -57,25 +59,36 @@ kubectl exec $(kubectl get pod -l app=ratings -o jsonpath='{.items[0].metadata.n
 #                -c ratings \
 #                -- curl productpage:9080/productpage | grep -o "<title>.*</title>" <title>Simple Bookstore App</title>
 
+
 #Open the application to outside traffic
 #The Bookinfo application is deployed but not accessible from the outside. To make it accessible, you need to create an Istio Ingress Gateway, which maps a path to a route at the edge of your mesh.
-# - kubectl apply -f samples/bookinfo/networking/bookinfo-gateway.yaml #Associate this application with the Istio gateway
-# - istioctl analyze #Ensure that there are no issues with the configuration
+kubectl apply -f samples/bookinfo/networking/bookinfo-gateway.yaml #Associate this application with the Istio gateway
+istioctl analyze #Ensure that there are no issues with the configuration
+
+#Other platforms
 #Determining the ingress IP and ports
 #If the EXTERNAL-IP value is set, your environment has an external load balancer that you can use for the ingress gateway.
-# - kubectl get svc istio-ingressgateway -n istio-system #determine if your Kubernetes cluster is running in an environment that supports external load balancers
+#If the EXTERNAL-IP value is <none> (or perpetually <pending>), your environment does not provide an external load balancer for the ingress gateway.
+#access the gateway using the service’s node port.
+kubectl get svc istio-ingressgateway -n istio-system #determine if your Kubernetes cluster is running in an environment that supports external load balancers
+
+#external load balancer
 # #Follow these instructions if you have determined that your environment has an external load balancer.
 # # If the EXTERNAL-IP value is <none> (or perpetually <pending>), your environment does not provide an external load balancer for the ingress gateway,access the gateway using the service’s node port.
 # - export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 # - export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].port}')
 # - export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].port}')
+
 # #In certain environments, the load balancer may be exposed using a host name, instead of an IP address.
 # #the ingress gateway’s EXTERNAL-IP value will not be an IP address, but rather a host name
 # #failed to set the INGRESS_HOST environment variable, correct the INGRESS_HOST value
 # - export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
-# #Follow these instructions if your environment does not have an external load balancer and choose a node port instead
-# - export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].nodePort}') #Set the ingress ports
-# - export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].nodePort}') #Set the ingress ports
+
+#Follow these instructions if your environment does not have an external load balancer and choose a node port instead
+#Set the ingress ports:
+export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].nodePort}') #Set the ingress ports
+export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].nodePort}') #Set the ingress ports
+
 # - export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT #Set GATEWAY_URL
 # - echo $GATEWAY_URL #Ensure an IP address and port were successfully assigned to the environment variable
 # # - echo http://$GATEWAY_URL/productpage #Verify external access,retrieve the external address of the Bookinfo application
