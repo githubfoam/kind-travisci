@@ -23,8 +23,8 @@ kubectl config use-context kind-istio-testing #run following command to set the 
 echo "===============================Install istio==========================================================="
 #Download Istio
 #/bin/sh -c 'curl -L https://istio.io/downloadIstio | sh -' #download and extract the latest release automatically (Linux or macOS)
-export ISTIO_VERSION="1.6.4"
-/bin/sh -c 'curl -L https://istio.io/downloadIstio | $ISTIO_VERSION=1.4.3 sh -' #download a specific version
+export ISTIOVERSION="1.6.4"
+/bin/sh -c 'curl -L https://istio.io/downloadIstio | ISTIO_VERSION=$ISTIOVERSION sh -' #download a specific version
 
 cd istio-* #Move to the Istio package directory. For example, if the package is istio-1.6.0
 export PATH=$PWD/bin:$PATH #Add the istioctl client to your path, The istioctl client binary in the bin/ directory.
