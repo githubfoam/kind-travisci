@@ -89,19 +89,34 @@ kubectl get svc istio-ingressgateway -n istio-system #determine if your Kubernet
 export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].nodePort}') #Set the ingress ports
 export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].nodePort}') #Set the ingress ports
 
-# - export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT #Set GATEWAY_URL
-# - echo $GATEWAY_URL #Ensure an IP address and port were successfully assigned to the environment variable
-# # - echo http://$GATEWAY_URL/productpage #Verify external access,retrieve the external address of the Bookinfo application
-# - istioctl dashboard kiali #optional dashboards installed by the demo installation,Access the Kiali dashboard. The default user name is admin and default password is admin
+export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT #Set GATEWAY_URL
+echo $GATEWAY_URL #Ensure an IP address and port were successfully assigned to the environment variable
+echo http://$GATEWAY_URL/productpage #Verify external access,retrieve the external address of the Bookinfo application
+echo $(curl http://$GATEWAY_URL/productpage)
+
+#View the dashboard
+#istioctl dashboard kiali #optional dashboards installed by the demo installation,Access the Kiali dashboard. The default user name is admin and default password is admin
+echo $(istioctl dashboard kiali)
+
+#Uninstall
+#Cleanup #https://istio.io/latest/docs/examples/bookinfo/#cleanup
+#Delete the routing rules and terminate the application pods
+samples/bookinfo/platform/kube/cleanup.sh
+#Confirm shutdown
+kubectl get virtualservices   #-- there should be no virtual services
+kubectl get destinationrules  #-- there should be no destination rules
+kubectl get gateway           #-- there should be no gateway
+kubectl get pods              #-- the Bookinfo pods should be deleted
+
+
 # #The Istio uninstall deletes the RBAC permissions and all resources hierarchically under the istio-system namespace
 # #It is safe to ignore errors for non-existent resources because they may have been deleted hierarchically.
-# - 'istioctl manifest generate --set profile=demo | kubectl delete -f -'
-# - kubectl delete namespace istio-system #The istio-system namespace is not removed by default. If no longer needed, use the following command to remove it
-# - kubectl get virtualservices   #-- there should be no virtual services
-# - kubectl get destinationrules  #-- there should be no destination rules
-# - kubectl get gateway           #-- there should be no gateway
-# - kubectl get pods              #-- the Bookinfo pods should be deleted
-# #Bookinfo cleanup starts
+/bin/sh -eu -xv -c 'istioctl manifest generate --set profile=demo | kubectl delete -f -'
+#The istio-system namespace is not removed by default.
+#If no longer needed, use the following command to remove it
+ kubectl delete namespace istio-system
+
+ 
 # - |
 #   SCRIPTDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 #   # only ask if in interactive mode
