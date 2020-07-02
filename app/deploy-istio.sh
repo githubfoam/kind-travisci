@@ -98,7 +98,7 @@ export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT #Set GATEWAY_URL
 
 #View the dashboard
 #istioctl dashboard kiali #optional dashboards installed by the demo installation,Access the Kiali dashboard. The default user name is admin and default password is admin
-echo $(istioctl dashboard kiali)
+istioctl dashboard kiali &
 
 #Uninstall
 #Cleanup #https://istio.io/latest/docs/examples/bookinfo/#cleanup
