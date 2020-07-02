@@ -1,11 +1,11 @@
 ---
 sudo: required
 dist: bionic
-env:
-  global:
-  - KUBECTL_VERSION=1.18.3
-  - KUBERNETES_VERSION=1.18.3
-  - KUBECONFIG=$HOME/.kube/config
+# env:
+#   global:
+#   - KUBECTL_VERSION=1.18.3
+#   - KUBERNETES_VERSION=1.18.3
+#   - KUBECONFIG=$HOME/.kube/config
 
 notifications:
   slack:

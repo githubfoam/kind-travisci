@@ -10,39 +10,36 @@ set -o xtrace
 #https://istio.io/docs/setup/getting-started/
 
 echo "=============================kind istio============================================================="
-- docker version
-- curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.8.1/kind-$(uname)-amd64
-- chmod +x ./kind
-- sudo mv ./kind /usr/local/bin/kind
-- kind get clusters #see the list of kind clusters
-- kind create cluster --name istio-testing #Create a cluster,By default, the cluster will be given the name kind
-- kind get clusters
+docker version
+curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.8.1/kind-$(uname)-amd64
+chmod +x ./kind
+sudo mv ./kind /usr/local/bin/kind
+kind get clusters #see the list of kind clusters
+kind create cluster --name istio-testing #Create a cluster,By default, the cluster will be given the name kind
+kind get clusters
 # - sudo snap install kubectl --classic
-- kubectl config get-contexts #list the local Kubernetes contexts
-- kubectl config use-context kind-istio-testing #run following command to set the current context for kubectl
+kubectl config get-contexts #list the local Kubernetes contexts
+kubectl config use-context kind-istio-testing #run following command to set the current context for kubectl
 - echo "===============================Install istio==========================================================="
-- 'curl -L https://istio.io/downloadIstio | sh -' #Download Istio
--  cd istio-* #Move to the Istio package directory. For example, if the package is istio-1.6.0
-- export PATH=$PWD/bin:$PATH #Add the istioctl client to your path, The istioctl client binary in the bin/ directory.
+'curl -L https://istio.io/downloadIstio | sh -' #Download Istio
+ cd istio-* #Move to the Istio package directory. For example, if the package is istio-1.6.0
+export PATH=$PWD/bin:$PATH #Add the istioctl client to your path, The istioctl client binary in the bin/ directory.
 #precheck inspects a Kubernetes cluster for Istio install requirements
-- istioctl experimental precheck #https://istio.io/docs/reference/commands/istioctl/#istioctl-experimental-precheck
-#Begin the Istio pre-installation verification check
-# - istioctl verify-install #Error: could not load IstioOperator from cluster: the server could not find the requested resource.  Use --filename
-- istioctl version
-- istioctl manifest apply --set profile=demo #Install Istio, use the demo configuration profile
-- kubectl label namespace default istio-injection=enabled #Add a namespace label to instruct Istio to automatically inject Envoy sidecar proxies when you deploy your application later
-- kubectl apply -f samples/bookinfo/platform/kube/bookinfo.yaml #Deploy the Bookinfo sample application:
-- kubectl get service --all-namespaces #list all services in all namespace
-- kubectl get services #The application will start. As each pod becomes ready, the Istio sidecar will deploy along with it.
-- kubectl get pods
-- |
-  for i in {1..60}; do # Timeout after 5 minutes, 60x2=120 secs, 2 mins
+istioctl experimental precheck #https://istio.io/docs/reference/commands/istioctl/#istioctl-experimental-precheck
+istioctl version
+istioctl manifest apply --set profile=demo #Install Istio, use the demo configuration profile
+kubectl label namespace default istio-injection=enabled #Add a namespace label to instruct Istio to automatically inject Envoy sidecar proxies when you deploy your application later
+kubectl apply -f samples/bookinfo/platform/kube/bookinfo.yaml #Deploy the Bookinfo sample application:
+kubectl get service --all-namespaces #list all services in all namespace
+kubectl get services #The application will start. As each pod becomes ready, the Istio sidecar will deploy along with it.
+kubectl get pods
+for i in {1..60}; do # Timeout after 5 minutes, 60x2=120 secs, 2 mins
     if kubectl get pods --namespace=istio-system |grep Running ; then
       break
     fi
     sleep 2
-  done
-- kubectl get service --all-namespaces #list all services in all namespace
+done
+kubectl get service --all-namespaces #list all services in all namespace
 # - |
 #   kubectl exec -it $(kubectl get pod \
 #                -l app=ratings \
