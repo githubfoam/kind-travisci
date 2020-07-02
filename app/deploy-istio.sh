@@ -47,7 +47,6 @@ for i in {1..60}; do # Timeout after 5 minutes, 60x2=120 secs, 2 mins
 done
 kubectl get service --all-namespaces #list all services in all namespace
 # see if the app is running inside the cluster and serving HTML pages by checking for the page title in the response
-echo $(kubectl exec -it $(kubectl get pod -l app=ratings -o jsonpath='{.items[0].metadata.name}') -c ratings -- curl productpage:9080/productpage | grep -o "<title>.*</title>")
 kubectl exec $(kubectl get pod -l app=ratings -o jsonpath='{.items[0].metadata.name}') -c ratings -- curl productpage:9080/productpage | grep -o "<title>.*</title>"
 #interactive shell
 #kubectl exec -it $(kubectl get pod -l app=ratings -o jsonpath='{.items[0].metadata.name}') -c ratings -- curl productpage:9080/productpage | grep -o "<title>.*</title>"
