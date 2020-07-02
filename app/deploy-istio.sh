@@ -116,7 +116,7 @@ kubectl get pods              #-- the Bookinfo pods should be deleted
 #If no longer needed, use the following command to remove it
  kubectl delete namespace istio-system
 
- 
+
 # - |
 #   SCRIPTDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 #   # only ask if in interactive mode
@@ -159,10 +159,3 @@ kubectl get pods              #-- the Bookinfo pods should be deleted
 # - kubectl get gateway           #-- there should be no gateway
 # - kubectl get pods              #-- the Bookinfo pods should be deleted
 #Bookinfo cleanup ends
-# - echo "===============================Adding Heapster Metrics to the Kubernetes Dashboard==========================================================="
-# - sudo snap install helm --classic && helm init
-# - kubectl create serviceaccount --namespace kube-system tiller #Create a service account
-# - kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller #Bind the new service account to the cluster-admin role. This will give tiller admin access to the entire cluster
-# - kubectl patch deploy --namespace kube-system tiller-deploy -p '{"spec":{"template":{"spec":{"serviceAccount":"tiller"}}}}' #Deploy tiller and add the line serviceAccount: tiller to spec.template.spec
-# - helm install --name heapster stable/heapster --namespace kube-system #install Heapster
-# - kind delete cluster --name istio-testing #delete the existing cluster
