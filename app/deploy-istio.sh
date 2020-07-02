@@ -21,8 +21,8 @@ kind get clusters
 kubectl config get-contexts #list the local Kubernetes contexts
 kubectl config use-context kind-istio-testing #run following command to set the current context for kubectl
 echo "===============================Install istio==========================================================="
-'curl -L https://istio.io/downloadIstio | sh -' #Download Istio
- cd istio-* #Move to the Istio package directory. For example, if the package is istio-1.6.0
+/bin/sh -c 'curl -L https://istio.io/downloadIstio | sh -' #Download Istio
+cd istio-* #Move to the Istio package directory. For example, if the package is istio-1.6.0
 export PATH=$PWD/bin:$PATH #Add the istioctl client to your path, The istioctl client binary in the bin/ directory.
 #precheck inspects a Kubernetes cluster for Istio install requirements
 istioctl experimental precheck #https://istio.io/docs/reference/commands/istioctl/#istioctl-experimental-precheck
