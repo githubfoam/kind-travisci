@@ -81,18 +81,20 @@ kubectl get svc istio-ingressgateway -n istio-system #determine if your Kubernet
 
 # #In certain environments, the load balancer may be exposed using a host name, instead of an IP address.
 # #the ingress gateway’s EXTERNAL-IP value will not be an IP address, but rather a host name
-# #failed to set the INGRESS_HOST environment variable, correct the INGRESS_HOST value
-# - export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+
+#failed to set the INGRESS_HOST environment variable, correct the INGRESS_HOST value
+ export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
 
 #Follow these instructions if your environment does not have an external load balancer and choose a node port instead
 #Set the ingress ports:
 export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].nodePort}') #Set the ingress ports
 export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].nodePort}') #Set the ingress ports
 
+#INGRESS_HOST: unbound variable
 export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT #Set GATEWAY_URL
-echo $GATEWAY_URL #Ensure an IP address and port were successfully assigned to the environment variable
-echo http://$GATEWAY_URL/productpage #Verify external access,retrieve the external address of the Bookinfo application
-echo $(curl http://$GATEWAY_URL/productpage)
+# echo $GATEWAY_URL #Ensure an IP address and port were successfully assigned to the environment variable
+# echo http://$GATEWAY_URL/productpage #Verify external access,retrieve the external address of the Bookinfo application
+# echo $(curl http://$GATEWAY_URL/productpage)
 
 #View the dashboard
 #istioctl dashboard kiali #optional dashboards installed by the demo installation,Access the Kiali dashboard. The default user name is admin and default password is admin
