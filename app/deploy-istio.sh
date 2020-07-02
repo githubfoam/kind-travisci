@@ -22,11 +22,10 @@ tio-testing #run following command to set the current context for kubectl
 
 #https://istio.io/latest/docs/setup/getting-started/
 echo "===============================Install istio==========================================================="
-
+#Download Istio
 #/bin/sh -c 'curl -L https://istio.io/downloadIstio | sh -' #download and extract the latest release automatically (Linux or macOS)
 export ISTIO_VERSION="1.6.4"
 /bin/sh -c 'curl -L https://istio.io/downloadIstio | $ISTIO_VERSION=1.4.3 sh -' #download a specific version
-
 
 cd istio-* #Move to the Istio package directory. For example, if the package is istio-1.6.0
 export PATH=$PWD/bin:$PATH #Add the istioctl client to your path, The istioctl client binary in the bin/ directory.
@@ -35,6 +34,8 @@ istioctl experimental precheck #https://istio.io/docs/reference/commands/istioct
 istioctl version
 istioctl manifest apply --set profile=demo #Install Istio, use the demo configuration profile
 kubectl label namespace default istio-injection=enabled #Add a namespace label to instruct Istio to automatically inject Envoy sidecar proxies when you deploy your application later
+
+#Deploy the sample application
 kubectl apply -f samples/bookinfo/platform/kube/bookinfo.yaml #Deploy the Bookinfo sample application:
 kubectl get service --all-namespaces #list all services in all namespace
 kubectl get services #The application will start. As each pod becomes ready, the Istio sidecar will deploy along with it.
@@ -46,6 +47,8 @@ for i in {1..60}; do # Timeout after 5 minutes, 60x2=120 secs, 2 mins
     sleep 2
 done
 kubectl get service --all-namespaces #list all services in all namespace
+# see if the app is running inside the cluster and serving HTML pages by checking for the page title in the response
+echo $(kubectl exec -it $(kubectl get pod -l app=ratings -o jsonpath='{.items[0].metadata.name}') -c ratings -- curl productpage:9080/productpage | grep -o "<title>.*</title>")
 # - |
 #   kubectl exec -it $(kubectl get pod \
 #                -l app=ratings \
