@@ -104,12 +104,12 @@ export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT #Set GATEWAY_URL
 #Uninstall
 #Cleanup #https://istio.io/latest/docs/examples/bookinfo/#cleanup
 #Delete the routing rules and terminate the application pods
-samples/bookinfo/platform/kube/cleanup.sh
+#samples/bookinfo/platform/kube/cleanup.sh
 #Confirm shutdown
-kubectl get virtualservices   #-- there should be no virtual services
-kubectl get destinationrules  #-- there should be no destination rules
-kubectl get gateway           #-- there should be no gateway
-kubectl get pods              #-- the Bookinfo pods should be deleted
+# kubectl get virtualservices   #-- there should be no virtual services
+# kubectl get destinationrules  #-- there should be no destination rules
+# kubectl get gateway           #-- there should be no gateway
+# kubectl get pods              #-- the Bookinfo pods should be deleted
 
 
 # #The Istio uninstall deletes the RBAC permissions and all resources hierarchically under the istio-system namespace
