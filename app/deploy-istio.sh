@@ -5,10 +5,8 @@ set -o nounset
 set -o xtrace
 # set -eox pipefail #safety for script
 
-#https://istio.io/docs/setup/platform-setup/kind/
 #https://kind.sigs.k8s.io/docs/user/quick-start/
-#https://istio.io/docs/setup/getting-started/
-
+#https://istio.io/docs/setup/platform-setup/kind/
 echo "=============================kind istio============================================================="
 docker version
 curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.8.1/kind-$(uname)-amd64
@@ -19,9 +17,17 @@ kind create cluster --name istio-testing #Create a cluster,By default, the clust
 kind get clusters
 # - sudo snap install kubectl --classic
 kubectl config get-contexts #list the local Kubernetes contexts
-kubectl config use-context kind-istio-testing #run following command to set the current context for kubectl
+kubectl config use-context kind-is
+tio-testing #run following command to set the current context for kubectl
+
+#https://istio.io/latest/docs/setup/getting-started/
 echo "===============================Install istio==========================================================="
-/bin/sh -c 'curl -L https://istio.io/downloadIstio | sh -' #Download Istio
+
+#/bin/sh -c 'curl -L https://istio.io/downloadIstio | sh -' #download and extract the latest release automatically (Linux or macOS)
+export ISTIO_VERSION="1.6.4"
+/bin/sh -c 'curl -L https://istio.io/downloadIstio | $ISTIO_VERSION=1.4.3 sh -' #download a specific version
+
+
 cd istio-* #Move to the Istio package directory. For example, if the package is istio-1.6.0
 export PATH=$PWD/bin:$PATH #Add the istioctl client to your path, The istioctl client binary in the bin/ directory.
 #precheck inspects a Kubernetes cluster for Istio install requirements
