@@ -17,8 +17,7 @@ kind create cluster --name istio-testing #Create a cluster,By default, the clust
 kind get clusters
 # - sudo snap install kubectl --classic
 kubectl config get-contexts #list the local Kubernetes contexts
-kubectl config use-context kind-is
-tio-testing #run following command to set the current context for kubectl
+kubectl config use-context kind-istio-testing #run following command to set the current context for kubectl
 
 #https://istio.io/latest/docs/setup/getting-started/
 echo "===============================Install istio==========================================================="
@@ -55,6 +54,7 @@ echo $(kubectl exec -it $(kubectl get pod -l app=ratings -o jsonpath='{.items[0]
 #                -o jsonpath='{.items[0].metadata.name}') \
 #                -c ratings \
 #                -- curl productpage:9080/productpage | grep -o "<title>.*</title>" <title>Simple Bookstore App</title>
+
 #Open the application to outside traffic
 #The Bookinfo application is deployed but not accessible from the outside. To make it accessible, you need to create an Istio Ingress Gateway, which maps a path to a route at the edge of your mesh.
 # - kubectl apply -f samples/bookinfo/networking/bookinfo-gateway.yaml #Associate this application with the Istio gateway
