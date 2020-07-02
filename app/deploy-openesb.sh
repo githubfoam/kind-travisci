@@ -6,8 +6,8 @@ echo "=============================openEBS======================================
 # kind create cluster --name openesb-testing
 # kubectl config use-context kind-openesb-testing
 kubectl cluster-info
-kubectl get pods --all-namespaces;
-kubectl get pods -n default;
+kubectl get pods --all-namespaces
+kubectl get pods -n default
 kubectl get pod -o wide #The IP column will contain the internal cluster IP address for each pod.
 kubectl get service --all-namespaces # find a Service IP,list all services in all namespaces
 kubectl apply -f https://openebs.github.io/charts/openebs-operator.yaml #install OpenEBS
