@@ -3,6 +3,8 @@ APP:="app/deploy-openesb.sh"
 
 deploy-kind:
 	bash deploy-kind.sh
+deploy-microservices:
+	bash app/deploy-microservices.sh
 deploy-cilium-cluster-mesh:
 	bash app/deploy-cilium-cluster-mesh.sh
 deploy-cilium-hubble-dist:

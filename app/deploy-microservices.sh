@@ -5,8 +5,9 @@ set -o nounset
 set -o xtrace
 # set -eox pipefail #safety for script
 
-#https://kind.sigs.k8s.io/docs/user/quick-start/
-#https://istio.io/docs/setup/platform-setup/kind/
+#https://istio.io/latest/docs/examples/microservices-istio/
+
+#https://istio.io/latest/docs/examples/microservices-istio/setup-kubernetes-cluster/
 echo "=============================kind istio============================================================="
 docker version
 curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.8.1/kind-$(uname)-amd64
@@ -18,6 +19,8 @@ kind get clusters
 # - sudo snap install kubectl --classic
 kubectl config get-contexts #list the local Kubernetes contexts
 kubectl config use-context kind-istio-testing #run following command to set the current context for kubectl
+export NAMESPACE=tutorial
+kubectl create namespace $NAMESPACE
 
 #https://istio.io/latest/docs/setup/getting-started/
 echo "===============================Install istio==========================================================="
@@ -101,29 +104,7 @@ export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT #Set GATEWAY_URL
 #istioctl dashboard kiali #optional dashboards installed by the demo installation,Access the Kiali dashboard. The default user name is admin and default password is admin
 #istioctl dashboard kiali # interactive shell
 
-
-#Uninstall
-#Cleanup #https://istio.io/latest/docs/examples/bookinfo/#cleanup
-#Delete the routing rules and terminate the application pods
-#samples/bookinfo/platform/kube/cleanup.sh
-# export ISTIORELEASE="1.6"
-# export NAMESPACE="default" #error: the path "/home/travis/build/githubfoam/kind-travisci/istio-1.6.4/bookinfo.yaml" does not exist
-# export NAMESPACE="istio-system" #error: the path "/home/travis/build/githubfoam/kind-travisci/istio-1.6.4/bookinfo.yaml" does not exist
-# /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/istio/istio/release-$ISTIORELEASE/samples/bookinfo/platform/kube/cleanup.sh)"
-#bash app/cleanup.sh #bash: app/cleanup.sh: No such file or directory
-# /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-
-#Confirm shutdown
-# kubectl get virtualservices --namespace=istio-system   #-- there should be no virtual services
-# kubectl get destinationrules --namespace=istio-system  #-- there should be no destination rules
-# kubectl get gateway --namespace=istio-system           #-- there should be no gateway
-# kubectl get pods --namespace=istio-system              #-- the Bookinfo pods should be deleted
-
-
-# #The Istio uninstall deletes the RBAC permissions and all resources hierarchically under the istio-system namespace
-# #It is safe to ignore errors for non-existent resources because they may have been deleted hierarchically.
-# /bin/sh -eu -xv -c 'istioctl manifest generate --set profile=demo | kubectl delete -f -'
-
-#The istio-system namespace is not removed by default.
-#If no longer needed, use the following command to remove it
- # kubectl delete namespace istio-system
+#Enable Envoy’s access logging.
+#https://istio.io/latest/docs/tasks/observability/logs/access-log/#before-you-begin
+#Deploy the sleep sample app to use as a test source for sending requests. 
+kubectl apply -f samples/sleep/sleep.yaml
