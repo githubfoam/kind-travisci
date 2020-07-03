@@ -111,16 +111,16 @@ export ISTIORELEASE="1.6"
 # /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 
 #Confirm shutdown
-kubectl get virtualservices --namespace=istio-system   #-- there should be no virtual services
-kubectl get destinationrules --namespace=istio-system  #-- there should be no destination rules
-kubectl get gateway --namespace=istio-system           #-- there should be no gateway
-kubectl get pods --namespace=istio-system              #-- the Bookinfo pods should be deleted
+# kubectl get virtualservices --namespace=istio-system   #-- there should be no virtual services
+# kubectl get destinationrules --namespace=istio-system  #-- there should be no destination rules
+# kubectl get gateway --namespace=istio-system           #-- there should be no gateway
+# kubectl get pods --namespace=istio-system              #-- the Bookinfo pods should be deleted
 
 
 # #The Istio uninstall deletes the RBAC permissions and all resources hierarchically under the istio-system namespace
 # #It is safe to ignore errors for non-existent resources because they may have been deleted hierarchically.
-/bin/sh -eu -xv -c 'istioctl manifest generate --set profile=demo | kubectl delete -f -'
+# /bin/sh -eu -xv -c 'istioctl manifest generate --set profile=demo | kubectl delete -f -'
 
 #The istio-system namespace is not removed by default.
 #If no longer needed, use the following command to remove it
- kubectl delete namespace istio-system
+ # kubectl delete namespace istio-system
