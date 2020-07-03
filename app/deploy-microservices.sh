@@ -103,3 +103,8 @@ export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT #Set GATEWAY_URL
 #View the dashboard
 #istioctl dashboard kiali #optional dashboards installed by the demo installation,Access the Kiali dashboard. The default user name is admin and default password is admin
 #istioctl dashboard kiali # interactive shell
+
+#Enable Envoy’s access logging.
+#https://istio.io/latest/docs/tasks/observability/logs/access-log/#before-you-begin
+#Deploy the sleep sample app to use as a test source for sending requests. 
+kubectl apply -f samples/sleep/sleep.yaml
