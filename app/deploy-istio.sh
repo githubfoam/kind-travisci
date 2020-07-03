@@ -107,7 +107,8 @@ export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT #Set GATEWAY_URL
 #Delete the routing rules and terminate the application pods
 #samples/bookinfo/platform/kube/cleanup.sh
 export ISTIORELEASE="1.6"
-export NAMESPACE="default"
+# export NAMESPACE="default" #error: the path "/home/travis/build/githubfoam/kind-travisci/istio-1.6.4/bookinfo.yaml" does not exist
+export NAMESPACE="istio-system"
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/istio/istio/release-$ISTIORELEASE/samples/bookinfo/platform/kube/cleanup.sh)"
 #bash app/cleanup.sh #bash: app/cleanup.sh: No such file or directory
 # /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
