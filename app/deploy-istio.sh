@@ -23,6 +23,7 @@ kubectl config use-context kind-istio-testing #run following command to set the 
 echo "===============================Install istio==========================================================="
 #Download Istio
 #/bin/sh -c 'curl -L https://istio.io/downloadIstio | sh -' #download and extract the latest release automatically (Linux or macOS)
+export ISTIORELEASE="1.6"
 export ISTIOVERSION="1.6.4"
 /bin/sh -c 'curl -L https://istio.io/downloadIstio | ISTIO_VERSION=$ISTIOVERSION sh -' #download a specific version
 
@@ -105,56 +106,21 @@ export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT #Set GATEWAY_URL
 #Cleanup #https://istio.io/latest/docs/examples/bookinfo/#cleanup
 #Delete the routing rules and terminate the application pods
 #samples/bookinfo/platform/kube/cleanup.sh
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/istio/istio/release-1.6/samples/bookinfo/platform/kube/cleanup.sh)"
+export ISTIORELEASE="1.6"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/istio/istio/release-$ISTIORELEASE/samples/bookinfo/platform/kube/cleanup.sh)"
 # /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+
 #Confirm shutdown
-kubectl get virtualservices   #-- there should be no virtual services
-kubectl get destinationrules  #-- there should be no destination rules
-kubectl get gateway           #-- there should be no gateway
-kubectl get pods              #-- the Bookinfo pods should be deleted
+kubectl get virtualservices --namespace=istio-system   #-- there should be no virtual services
+kubectl get destinationrules --namespace=istio-system  #-- there should be no destination rules
+kubectl get gateway --namespace=istio-system           #-- there should be no gateway
+kubectl get pods --namespace=istio-system              #-- the Bookinfo pods should be deleted
 
 
 # #The Istio uninstall deletes the RBAC permissions and all resources hierarchically under the istio-system namespace
 # #It is safe to ignore errors for non-existent resources because they may have been deleted hierarchically.
 /bin/sh -eu -xv -c 'istioctl manifest generate --set profile=demo | kubectl delete -f -'
+
 #The istio-system namespace is not removed by default.
 #If no longer needed, use the following command to remove it
  kubectl delete namespace istio-system
-
-
-# - |
-#   SCRIPTDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-#   # only ask if in interactive mode
-#   if [[ -t 0 && -z ${NAMESPACE} ]];then
-#     echo -n "namespace ? [default] "
-#     read -r NAMESPACE
-#   fi
-#   if [[ -z ${NAMESPACE} ]];then
-#     NAMESPACE=default
-#   fi
-#   echo "using NAMESPACE=${NAMESPACE}"
-#   protos=( destinationrules virtualservices gateways )
-#   for proto in "${protos[@]}"; do
-#     for resource in $(kubectl get -n ${NAMESPACE} "$proto" -o name); do
-#       kubectl delete -n ${NAMESPACE} "$resource";
-#     done
-#   done
-#   OUTPUT=$(mktemp)
-#   export OUTPUT
-#   echo "Application cleanup may take up to one minute"
-#   kubectl delete -n ${NAMESPACE} -f "$SCRIPTDIR/bookinfo.yaml" > "${OUTPUT}" 2>&1
-#   ret=$?
-#   function cleanup() {
-#     rm -f "${OUTPUT}"
-#   }
-#   trap cleanup EXIT
-#   if [[ ${ret} -eq 0 ]];then
-#     cat "${OUTPUT}"
-#   else
-#     # ignore NotFound errors
-#     OUT2=$(grep -v NotFound "${OUTPUT}")
-#     if [[ -n ${OUT2} ]];then
-#       cat "${OUTPUT}"
-#       exit ${ret}
-#     fi
-#   fi
