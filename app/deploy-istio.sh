@@ -108,7 +108,7 @@ export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT #Set GATEWAY_URL
 #samples/bookinfo/platform/kube/cleanup.sh
 export ISTIORELEASE="1.6"
 # /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/istio/istio/release-$ISTIORELEASE/samples/bookinfo/platform/kube/cleanup.sh)"
-bash cleanup.sh
+bash app/cleanup.sh
 # /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 
 #Confirm shutdown
