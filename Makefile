@@ -1,6 +1,8 @@
 IMAGE := alpine/fio
 APP:="app/deploy-openesb.sh"
 
+deploy-kubesec:
+	bash app/deploy-kubesec.sh
 deploy-kind:
 	bash deploy-kind.sh
 deploy-microservices:
