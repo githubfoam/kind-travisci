@@ -156,6 +156,17 @@ istioctl install --set profile=demo --set meshConfig.accessLogFile="/dev/stdout"
 # connect to 10.110.95.100 port 8000 failed: Connection refused
 # kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items[0].metadata.name}') -c sleep -- curl -v httpbin:8000/status/418
 
+kubectl get pods --all-namespaces
+echo echo "Waiting for kubernetes be ready ..."
+for i in {1..150}; do # Timeout after 5 minutes, 60x5=300 secs
+      if kubectl get pods --namespace=istio-system  | grep ContainerCreating ; then
+        sleep 10
+      else
+        break
+      fi
+done
+kubectl get pods --all-namespaces
+
 # Check sleep’s log
 kubectl logs -l app=sleep -c istio-proxy
 # Check httpbin’s log

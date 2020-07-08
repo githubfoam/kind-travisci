@@ -18,7 +18,7 @@ set -o xtrace
 
 echo "=============================kubesec============================================================="
 #https://github.com/controlplaneio/kubesec
-go get -u github.com/controlplaneio/kubesec/cmd/kubesec
+# go get -u github.com/controlplaneio/kubesec/cmd/kubesec
 
 #Command line usage
 cat <<EOF > kubesec-test.yaml

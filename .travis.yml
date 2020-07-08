@@ -210,7 +210,8 @@ matrix:
         - sudo kind create cluster --name kubesec-testing
         - sudo kubectl config use-context kind-kubesec-testing
         - go version
-        # - sudo make deploy-kubesec
+        - go get -u github.com/controlplaneio/kubesec/cmd/kubesec
+        - sudo make deploy-kubesec
         - sudo kind delete cluster --name kubesec-testing
       after_success:
         - deactivate
