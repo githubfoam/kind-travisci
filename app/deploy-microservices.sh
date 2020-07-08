@@ -145,3 +145,16 @@ export SOURCE_POD=$(kubectl get pod -l app=sleep -o jsonpath={.items..metadata.n
 # kubectl apply -f <(istioctl kube-inject -f samples/httpbin/httpbin.yaml)
 
 kubectl apply -f samples/httpbin/httpbin.yaml
+
+
+# Enable Envoy’s access logging
+# Install Istio using the demo profile.
+# replace demo with the name of the profile you used when you installed Istio
+istioctl install --set profile=demo --set meshConfig.accessLogFile="/dev/stdout"
+
+# Test the access log
+kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items[0].metadata.name}') -c sleep -- curl -v httpbin:8000/status/418
+# Check sleep’s log
+kubectl logs -l app=sleep -c istio-proxy
+# Check httpbin’s log
+kubectl logs -l app=httpbin -c istio-proxy
