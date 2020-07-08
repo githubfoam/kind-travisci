@@ -7,17 +7,17 @@ set -o xtrace
 
 #https://kind.sigs.k8s.io/docs/user/quick-start/
 #https://istio.io/docs/setup/platform-setup/kind/
-# echo "=============================kind istio============================================================="
-# docker version
-# curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.8.1/kind-$(uname)-amd64
-# chmod +x ./kind
-# sudo mv ./kind /usr/local/bin/kind
-# kind get clusters #see the list of kind clusters
-# kind create cluster --name istio-testing #Create a cluster,By default, the cluster will be given the name kind
-# kind get clusters
-# # - sudo snap install kubectl --classic
-# kubectl config get-contexts #list the local Kubernetes contexts
-# kubectl config use-context kind-istio-testing #run following command to set the current context for kubectl
+echo "=============================kind istio============================================================="
+docker version
+curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.8.1/kind-$(uname)-amd64
+chmod +x ./kind
+sudo mv ./kind /usr/local/bin/kind
+kind get clusters #see the list of kind clusters
+kind create cluster --name istio-testing #Create a cluster,By default, the cluster will be given the name kind
+kind get clusters
+# - sudo snap install kubectl --classic
+kubectl config get-contexts #list the local Kubernetes contexts
+kubectl config use-context kind-istio-testing #run following command to set the current context for kubectl
 
 #https://istio.io/latest/docs/setup/getting-started/
 echo "===============================Install istio==========================================================="
