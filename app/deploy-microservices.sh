@@ -153,7 +153,9 @@ kubectl apply -f samples/httpbin/httpbin.yaml
 istioctl install --set profile=demo --set meshConfig.accessLogFile="/dev/stdout"
 
 # Test the access log
-kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items[0].metadata.name}') -c sleep -- curl -v httpbin:8000/status/418
+# connect to 10.110.95.100 port 8000 failed: Connection refused
+# kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items[0].metadata.name}') -c sleep -- curl -v httpbin:8000/status/418
+
 # Check sleep’s log
 kubectl logs -l app=sleep -c istio-proxy
 # Check httpbin’s log
