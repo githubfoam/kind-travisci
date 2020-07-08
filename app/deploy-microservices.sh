@@ -157,6 +157,14 @@ istioctl install --set profile=demo --set meshConfig.accessLogFile="/dev/stdout"
 # kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items[0].metadata.name}') -c sleep -- curl -v httpbin:8000/status/418
 
 kubectl get pods --all-namespaces
+echo echo "Waiting for sleep and httpbin to be ready ..."
+for i in {1..150}; do # Timeout after 5 minutes, 60x5=300 secs
+      if kubectl get pods --namespace=default  | grep PodInitializing ; then
+        sleep 10
+      else
+        break
+      fi
+done
 echo echo "Waiting for kubernetes be ready ..."
 for i in {1..150}; do # Timeout after 5 minutes, 60x5=300 secs
       if kubectl get pods --namespace=istio-system  | grep ContainerCreating ; then
