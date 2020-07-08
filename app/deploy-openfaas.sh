@@ -3,8 +3,11 @@ set -eox pipefail #safety for script
 
 # https://itnext.io/deploy-your-first-serverless-function-to-kubernetes-232307f7b0a9
 echo "============================OpenFaaS =============================================================="
-`curl -sSLf https://cli.openfaas.com | sh` #install the OpenFaaS CLI
-`curl -sSLf https://dl.get-arkade.dev | sh` #install arkade
+# `curl -sSLf https://cli.openfaas.com | sh` #install the OpenFaaS CLI
+# `curl -sSLf https://dl.get-arkade.dev | sh` #install arkade
+
+/bin/sh -c 'curl -sSLf https://cli.openfaas.com | sh' ##install the OpenFaaS CLI
+/bin/sh -c 'curl -sSLf https://dl.get-arkade.dev | sh' ##install arkade
 
 arkade install openfaas #use arkade to install OpenFaaS
 arkade info openfaas

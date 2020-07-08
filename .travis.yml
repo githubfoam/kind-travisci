@@ -181,7 +181,7 @@ matrix:
         - sudo kind create cluster --name openfaas-testing
         - sudo kubectl config use-context kind-openfaas-testing
         - sudo make deploy-openfaas
-        - sudo kind delete cluster --name openfaas-testing        
+        - sudo kind delete cluster --name openfaas-testing
       after_success:
         - deactivate
 
@@ -204,7 +204,11 @@ matrix:
         - source ~venvpy3/bin/activate
         - pip install -r requirements.txt
       script:
+        - sudo make deploy-kind
+        - sudo kind create cluster --name kubesec-testing
+        - sudo kubectl config use-context kind-kubesec-testing
         - sudo make deploy-kubesec
+        - sudo kind delete cluster --name kubesec-testing          
       after_success:
         - deactivate
 
