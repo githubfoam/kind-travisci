@@ -160,32 +160,33 @@ matrix:
     #   after_success:
     #     - deactivate
 
-    - name: "openfaas w snapped kubectl helm Python 3.7 on bionic" #OK
-      dist: bionic
-      arch: amd64
-      addons:
-        snaps:
-          - name: kubectl
-            confinement: classic # or devmode
-            channel: latest/stable # will be passed to --channel flag
-          - name: helm
-            confinement: classic # or devmode
-            channel: latest/stable # will be passed to --channel flag
-      language: python
-      python: 3.7
-      before_install:
-        - pip3 install virtualenv
-        - virtualenv -p $(which python3) ~venvpy3
-        - source ~venvpy3/bin/activate
-        - pip install -r requirements.txt
-      script:
-        - sudo make deploy-kind
-        - sudo kind create cluster --name openfaas-testing
-        - sudo kubectl config use-context kind-openfaas-testing
-        - sudo make deploy-openfaas
-        - sudo kind delete cluster --name openfaas-testing
-      after_success:
-        - deactivate
+    #MOVED
+    # - name: "openfaas w snapped kubectl helm Python 3.7 on bionic" #OK
+    #   dist: bionic
+    #   arch: amd64
+    #   addons:
+    #     snaps:
+    #       - name: kubectl
+    #         confinement: classic # or devmode
+    #         channel: latest/stable # will be passed to --channel flag
+    #       - name: helm
+    #         confinement: classic # or devmode
+    #         channel: latest/stable # will be passed to --channel flag
+    #   language: python
+    #   python: 3.7
+    #   before_install:
+    #     - pip3 install virtualenv
+    #     - virtualenv -p $(which python3) ~venvpy3
+    #     - source ~venvpy3/bin/activate
+    #     - pip install -r requirements.txt
+    #   script:
+    #     - sudo make deploy-kind
+    #     - sudo kind create cluster --name openfaas-testing
+    #     - sudo kubectl config use-context kind-openfaas-testing
+    #     - sudo make deploy-openfaas
+    #     - sudo kind delete cluster --name openfaas-testing
+    #   after_success:
+    #     - deactivate
 
     - name: "kubesec w snapped kubectl helm Python 3.7 on bionic" #OK
       dist: bionic
@@ -198,7 +199,7 @@ matrix:
           - name: helm
             confinement: classic # or devmode
             channel: latest/stable # will be passed to --channel flag
-      language: go      
+      language: go
       # before_install:
       #   - pip3 install virtualenv
       #   - virtualenv -p $(which python3) ~venvpy3
@@ -208,7 +209,8 @@ matrix:
         - sudo make deploy-kind
         - sudo kind create cluster --name kubesec-testing
         - sudo kubectl config use-context kind-kubesec-testing
-        - sudo make deploy-kubesec
+        - go version
+        # - sudo make deploy-kubesec
         - sudo kind delete cluster --name kubesec-testing
       after_success:
         - deactivate
