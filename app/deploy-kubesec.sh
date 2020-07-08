@@ -7,12 +7,13 @@ set -o xtrace
 echo "=============================install go============================================================="
 export GOVERSION="1.14.4"
 curl -O https://dl.google.com/go/go$GOVERSION.linux-amd64.tar.gz
-tar -xvf go$GOVERSION.linux-amd64.tar.gz
+tar -vf go$GOVERSION.linux-amd64.tar.gz
 sudo mv go /usr/local
+stat /usr/local/go
 mkdir ~/work
 echo "export GOPATH=$HOME/work" >> ~/.profile
 echo "export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin" >> ~/.profile
-# source ~/.profile
+source ~/.profile
 go version
 
 echo "=============================kubesec============================================================="
