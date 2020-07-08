@@ -19,7 +19,13 @@ kind get clusters
 # - sudo snap install kubectl --classic
 kubectl config get-contexts #list the local Kubernetes contexts
 kubectl config use-context kind-istio-testing #run following command to set the current context for kubectl
+
+
+# Setup a Kubernetes Cluster
+
+# Create an environment variable to store the name of a namespace
 export NAMESPACE=tutorial
+# Create the namespace
 kubectl create namespace $NAMESPACE
 
 #https://istio.io/latest/docs/setup/getting-started/
@@ -106,5 +112,5 @@ export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT #Set GATEWAY_URL
 
 #Enable Envoy’s access logging.
 #https://istio.io/latest/docs/tasks/observability/logs/access-log/#before-you-begin
-#Deploy the sleep sample app to use as a test source for sending requests. 
+#Deploy the sleep sample app to use as a test source for sending requests.
 kubectl apply -f samples/sleep/sleep.yaml

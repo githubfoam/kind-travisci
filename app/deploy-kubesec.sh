@@ -12,7 +12,7 @@ sudo mv go /usr/local
 mkdir ~/work
 echo "export GOPATH=$HOME/work" >> ~/.profile
 echo "export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin" >> ~/.profile
-source ~/.profile
+# source ~/.profile
 go version
 
 echo "=============================kubesec============================================================="

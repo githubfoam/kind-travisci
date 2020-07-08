@@ -17,15 +17,15 @@ kubectl rollout status -n openfaas deploy/gateway
 kubectl port-forward -n openfaas svc/gateway 8080:8080 &
 
 # Now log in using the CLI
-PASSWORD=$(kubectl get secret -n openfaas basic-auth -o jsonpath="{.data.basic-auth-password}" | base64 --decode; echo)
+# PASSWORD=$(kubectl get secret -n openfaas basic-auth -o jsonpath="{.data.basic-auth-password}" | base64 --decode; echo)
 # interactive shell
 # echo -n $PASSWORD | faas-cli login --username admin --password-stdin
 
-faas-cli store deploy nodeinfo
+# faas-cli store deploy nodeinfo
 # Check to see "Ready" status
-faas-cli describe nodeinfo# Invoke
-echo | faas-cli invoke nodeinfo
-echo | faas-cli invoke nodeinfo --async
+# faas-cli describe nodeinfo# Invoke
+# echo | faas-cli invoke nodeinfo
+# echo | faas-cli invoke nodeinfo --async
 
 # curl http://localhost:8080
 # Get the password so you can open the UI
@@ -34,5 +34,5 @@ echo | faas-cli invoke nodeinfo --async
 # faas-cli template store list
 # Sign up for a Docker Hub account, so that you can store your functions for free.
 # export OPENFAAS_PREFIX="DOCKER_HUB_USERNAME"
-export OPENFAAS_PREFIX=$DOCKER_USERNAME #travisci env var
-faas-cli new --lang python3 serverless
+# export OPENFAAS_PREFIX=$DOCKER_USERNAME #travisci env var
+# faas-cli new --lang python3 serverless
