@@ -178,4 +178,50 @@ kubectl get pods --all-namespaces
 # Check sleep’s log
 kubectl logs -l app=sleep -c istio-proxy
 # Check httpbin’s log
-kubectl logs -l app=httpbin -c istio-proxy
+kubectl logs -l app=httpbin -c istio-proxy #2020-07-08T18:15:02.910663Z	info	Envoy proxy is ready
+
+
+# https://istio.io/latest/docs/examples/microservices-istio/setup-kubernetes-cluster/
+# Create a Kubernetes Ingress resource for these common Istio services using the kubectl
+# Grafana
+# Jaeger
+# Prometheus
+# Kiali
+# The kubectl command can accept an in-line configuration to create the Ingress resources for each service
+kubectl apply -f - <<EOF
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: istio-system
+  namespace: istio-system
+spec:
+  rules:
+  - host: my-istio-dashboard.io
+    http:
+      paths:
+      - path: /*
+        backend:
+          serviceName: grafana
+          servicePort: 3000
+  - host: my-istio-tracing.io
+    http:
+      paths:
+      - path: /*
+        backend:
+          serviceName: tracing
+          servicePort: 9411
+  - host: my-istio-logs-database.io
+    http:
+      paths:
+      - path: /*
+        backend:
+          serviceName: prometheus
+          servicePort: 9090
+  - host: my-kiali.io
+    http:
+      paths:
+      - path: /*
+        backend:
+          serviceName: kiali
+          servicePort: 20001
+EOF
