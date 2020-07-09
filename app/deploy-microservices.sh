@@ -20,6 +20,7 @@ kind get clusters
 kubectl config get-contexts #list the local Kubernetes contexts
 kubectl config use-context kind-istio-testing #run following command to set the current context for kubectl
 
+BASEDIR=`pwd` && echo $BASEDIR
 
 # Setup a Kubernetes Cluster
 
@@ -314,10 +315,8 @@ echo $NAMESPACE
 
 # Set the KUBECONFIG environment variable for the ${NAMESPACE}-user-config.yaml configuration file
 # export KUBECONFIG=./${NAMESPACE}-user-config.yaml
-ls -lai ~/
-pwd
-ls -lai
-export KUBECONFIG=../${NAMESPACE}-user-config.yaml
+export KUBECONFIG=$BASEDIR/${NAMESPACE}-user-config.yaml
+
 # Verify that the configuration took effect by printing the current namespaces
 # see the name of your namespace in the output
 kubectl config view -o jsonpath="{.contexts[?(@.name==\"$(kubectl config current-context)\")].context.namespace}"
