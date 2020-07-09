@@ -1,4 +1,3 @@
-cat <<EOF > ./${NAMESPACE}-user-config.yaml
 apiVersion: v1
 kind: Config
 preferences: {}
@@ -24,4 +23,3 @@ contexts:
   name: ${NAMESPACE}
 
 current-context: ${NAMESPACE}
-EOF
