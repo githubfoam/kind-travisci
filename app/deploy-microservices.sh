@@ -313,8 +313,8 @@ EOF
 echo $NAMESPACE
 
 # Set the KUBECONFIG environment variable for the ${NAMESPACE}-user-config.yaml configuration file
-export KUBECONFIG=./${NAMESPACE}-user-config.yaml
-
+# export KUBECONFIG=./${NAMESPACE}-user-config.yaml
+export KUBECONFIG=${NAMESPACE}-user-config.yaml
 # Verify that the configuration took effect by printing the current namespaces
 # see the name of your namespace in the output
 kubectl config view -o jsonpath="{.contexts[?(@.name==\"$(kubectl config current-context)\")].context.namespace}"
