@@ -125,7 +125,6 @@ matrix:
         - pip install -r requirements.txt
       script:
         - sudo make deploy-kind
-        - sudo make deploy-kind
         - sudo kind create cluster --name tutorial-cluster
         - sudo kubectl config use-context kind-tutorial-cluster
         - sudo make deploy-microservices
