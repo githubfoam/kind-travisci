@@ -25,16 +25,16 @@ spec:
 EOF
 echo "resource quotas applied to the namespace"
 
-helm install --name elastic-stack --namespace=elk stable/elastic-stack -f app/sample-elastic-stack.yaml
-sleep 180
-
+helm install --name elastic-stack --namespace=elk stable/elastic-stack -f my-elastic-stack.yaml
+sleep 150
 kubectl get pods -n elk -l "release=elastic-stack"  
 
 helm install --name kube-state-metrics --namespace=elk stable/kube-state-metrics
-helm install --name elastic-metricbeat --namespace=elk stable/metricbeat -f app/sample-elastic-metricbeat.yaml # metricbeat dashboard 
+helm install --name elastic-metricbeat --namespace=elk stable/metricbeat -f my-elastic-metricbeat.yaml # metricbeat dashboard 
 kubectl --namespace=elk get pods -l "app=metricbeat,release=elastic-metricbeat"
 
 export POD_NAME=$(kubectl get pods -n elk -l "app=kibana,release=elastic-stack" -o jsonpath="{.items[0].metadata.name}");
 kubectl port-forward -n elk $POD_NAME 5601:5601
 
-curl http://localhost:5601
+# view dashoard 
+curl http://localhost:5601/ 
