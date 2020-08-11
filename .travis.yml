@@ -104,34 +104,6 @@ matrix:
     #   after_success:
     #     - deactivate
 
-    - name: "chaos mesh kind w snapped kubectl helm Python 3.7 on bionic" #OK
-      dist: bionic
-      arch: amd64
-      addons:
-        snaps:
-          - name: kubectl
-            confinement: classic # or devmode
-            channel: latest/stable # will be passed to --channel flag
-          - name: helm
-            confinement: classic # or devmode
-            channel: latest/stable # will be passed to --channel flag
-      language: python
-      python: 3.7
-      before_install:
-        - pip3 install virtualenv
-        - virtualenv -p $(which python3) ~venvpy3
-        - source ~venvpy3/bin/activate
-        - pip install -r requirements.txt
-      script:
-        - sudo make deploy-kind
-        - sudo kind create cluster --name tutorial-cluster
-        - sudo kubectl config use-context kind-tutorial-cluster
-        - sudo make deploy-chaosmesh
-        - sudo kind delete cluster --name tutorial-cluster
-      after_success:
-        - deactivate
-
-
 
     # - name: "ELK kind w snapped kubectl helm Python 3.7 on bionic" #OK
     #   dist: bionic
@@ -334,7 +306,36 @@ matrix:
     #   after_success:
     #     - deactivate
 
-    - name: "kubesec w snapped kubectl helm Python 3.7 on bionic" #OK
+    # - name: "kubesec w snapped kubectl helm Python 3.7 on bionic" #OK
+    #   dist: bionic
+    #   arch: amd64
+    #   addons:
+    #     snaps:
+    #       - name: kubectl
+    #         confinement: classic # or devmode
+    #         channel: latest/stable # will be passed to --channel flag
+    #       - name: helm
+    #         confinement: classic # or devmode
+    #         channel: latest/stable # will be passed to --channel flag
+    #   language: go
+    #   # before_install:
+    #   #   - pip3 install virtualenv
+    #   #   - virtualenv -p $(which python3) ~venvpy3
+    #   #   - source ~venvpy3/bin/activate
+    #   #   - pip install -r requirements.txt
+    #   script:
+    #     - sudo make deploy-kind
+    #     - sudo kind create cluster --name kubesec-testing
+    #     - sudo kubectl config use-context kind-kubesec-testing
+    #     - go version
+    #     - go get -u github.com/controlplaneio/kubesec/cmd/kubesec
+    #     - sudo make deploy-kubesec
+    #     - sudo kind delete cluster --name kubesec-testing
+    #   after_success:
+    #     - deactivate
+
+# ######################## TESTED OK STARTS #################################
+    - name: "chaos mesh kind w snapped kubectl helm Python 3.7 on bionic" #OK
       dist: bionic
       arch: amd64
       addons:
@@ -345,24 +346,22 @@ matrix:
           - name: helm
             confinement: classic # or devmode
             channel: latest/stable # will be passed to --channel flag
-      language: go
-      # before_install:
-      #   - pip3 install virtualenv
-      #   - virtualenv -p $(which python3) ~venvpy3
-      #   - source ~venvpy3/bin/activate
-      #   - pip install -r requirements.txt
+      language: python
+      python: 3.7
+      before_install:
+        - pip3 install virtualenv
+        - virtualenv -p $(which python3) ~venvpy3
+        - source ~venvpy3/bin/activate
+        - pip install -r requirements.txt
       script:
         - sudo make deploy-kind
-        - sudo kind create cluster --name kubesec-testing
-        - sudo kubectl config use-context kind-kubesec-testing
-        - go version
-        - go get -u github.com/controlplaneio/kubesec/cmd/kubesec
-        - sudo make deploy-kubesec
-        - sudo kind delete cluster --name kubesec-testing
+        - sudo kind create cluster --name tutorial-cluster
+        - sudo kubectl config use-context kind-tutorial-cluster
+        - sudo make deploy-chaosmesh
+        - sudo kind delete cluster --name tutorial-cluster
       after_success:
         - deactivate
 
-# ######################## OK #################################
     #
     #   #https://docs.cilium.io/en/latest/gettingstarted/kind/
     # - name: "cilium hubble local kind w snapped kubectl helm Python 3.7 on bionic" #OK
