@@ -24,7 +24,7 @@ helm install cilium ./cilium \
    --set global.pullPolicy=IfNotPresent \
    --set config.ipam=kubernetes
 
-echo echo "Waiting for cilium to be ready ..."
+echo "Waiting for cilium to be ready ..."
 for i in {1..60}; do # Timeout after 3 minutes, 60x5=300 secs
      if kubectl get pods --namespace=kube-system  | grep ContainerCreating ; then
          sleep 5

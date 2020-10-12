@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1beta1 
+kind: Ingress
+metadata:
+  name: demo-vote-ingress
+  namespace: vote
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+        location ~ \.css {
+          add_header  Content-Type    text/css;
+        }
+        location ~ \.js {
+          add_header  Content-Type    application/x-javascript;
+        }
+spec:
+  rules:
+  - host: demo-kubernetes.info
+    http:
+      paths:
+      - path: /vote/*
+        backend:
+          serviceName: vote
+          servicePort: 5000
+      - path: /static/*
+        backend:
+          serviceName: vote
+          servicePort: 5000
