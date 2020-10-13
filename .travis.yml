@@ -384,7 +384,7 @@ matrix:
         - sudo make deploy-kind
         - sudo kind create cluster --name tutorial-cluster
         - sudo kubectl config use-context kind-tutorial-cluster
-        - sudo make deploy-chaosmesh
+        - sudo make deploy-voting-app
         - sudo kind delete cluster --name tutorial-cluster
       after_success:
         - deactivate
