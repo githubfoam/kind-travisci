@@ -27,3 +27,5 @@ done
 kubectl get service --all-namespaces #list all services in all namespace
 # Verify your installation
 kubectl get pod -n chaos-testing
+
+echo "===============================Install Chaos Mesh==========================================================="
