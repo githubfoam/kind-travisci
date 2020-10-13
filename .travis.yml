@@ -1,6 +1,6 @@
 ---
 sudo: required
-dist: bionic
+dist: focal
 
 notifications:
   slack:
@@ -10,165 +10,8 @@ matrix:
   fast_finish: true
   include:
 
-    - name: "istio service mesh kind w snapped kubectl helm Python 3.7 on bionic" #OK
-      dist: bionic
-      arch: amd64
-      addons:
-        snaps:
-          - name: kubectl
-            confinement: classic
-            channel: latest/stable
-          - name: helm
-            confinement: classic
-            channel: latest/stable
-      language: python
-      python: 3.7
-      before_install:
-        - pip3 install virtualenv
-        - virtualenv -p $(which python3) ~venvpy3
-        - source ~venvpy3/bin/activate
-        - pip install -r requirements.txt
-      script:
-        - sudo make deploy-kind
-        - sudo kind create cluster --config=app/kind-config.yaml
-        - sudo kubectl cluster-info --context kind-kind
-        - sudo make deploy-istio
-      after_success:
-        - deactivate
-
-    #https://docs.cilium.io/en/latest/gettingstarted/kind/
-    - name: "cilium hubble local kind w snapped kubectl helm Python 3.7 on bionic" #OK
-      dist: bionic
-      arch: amd64
-      addons:
-        snaps:
-          - name: kubectl
-            confinement: classic
-            channel: latest/stable
-          - name: helm
-            confinement: classic
-            channel: latest/stable
-      language: python
-      python: 3.7
-      before_install:
-        - pip3 install virtualenv
-        - virtualenv -p $(which python3) ~venvpy3
-        - source ~venvpy3/bin/activate
-        - pip install -r requirements.txt
-      script:
-        - sudo make deploy-kind
-        - sudo kind create cluster --config=app/kind-config.yaml
-        - sudo kubectl cluster-info --context kind-kind
-        - sudo make deploy-cilium-hubble-local
-      after_success:
-        - deactivate
-
-      #https://docs.cilium.io/en/latest/gettingstarted/kind/
-    - name: "cilium kind w snapped kubectl helm Python 3.7 on bionic" #OK
-      dist: bionic
-      arch: amd64
-      addons:
-        snaps:
-          - name: kubectl
-            confinement: classic
-            channel: latest/stable
-          - name: helm
-            confinement: classic
-            channel: latest/stable
-      language: python
-      python: 3.7
-      before_install:
-        - pip3 install virtualenv
-        - virtualenv -p $(which python3) ~venvpy3
-        - source ~venvpy3/bin/activate
-        - pip install -r requirements.txt
-      script:
-        - sudo make deploy-kind
-        - sudo kind create cluster --config=app/kind-config.yaml
-        - sudo kubectl cluster-info --context kind-kind
-        - sudo make deploy-cilium
-      after_success:
-        - deactivate
-
-    - name: "kubeflow kind w snapped kubectl helm Python 3.7 on bionic" #OK
-      dist: bionic
-      arch: amd64
-      addons:
-        snaps:
-          - name: kubectl
-            confinement: classic
-            channel: latest/stable
-          - name: helm
-            confinement: classic
-            channel: latest/stable
-      language: python
-      python: 3.7
-      before_install:
-        - pip3 install virtualenv
-        - virtualenv -p $(which python3) ~venvpy3
-        - source ~venvpy3/bin/activate
-        - pip install -r requirements.txt
-      script:
-        - sudo make deploy-kind
-        - sudo kind create cluster --name kubeflow-testing
-        - sudo kubectl config use-context kind-kubeflow-testing
-        - sudo make deploy-kubeflow
-        - sudo kind delete cluster --name kubeflow-testing
-      after_success:
-        - deactivate
-
-    - name: "weavescope kind w snapped kubectl helm Python 3.7 on bionic" #OK
-      dist: bionic
-      arch: amd64
-      addons:
-        snaps:
-          - name: kubectl
-            confinement: classic
-            channel: latest/stable
-          - name: helm
-            confinement: classic
-            channel: latest/stable
-      language: python
-      python: 3.7
-      before_install:
-        - pip3 install virtualenv
-        - virtualenv -p $(which python3) ~venvpy3
-        - source ~venvpy3/bin/activate
-        - pip install -r requirements.txt
-      script:
-        - sudo make deploy-kind
-        - sudo kind create cluster --name weavescope-testing
-        - sudo kubectl config use-context kind-weavescope-testing
-        - sudo make deploy-weavescope
-        - sudo kind delete cluster --name weavescope-testing
-      after_success:
-        - deactivate
-
-    - name: "kind w snapped kubectl helm Python 3.7 on bionic" #OK
-      dist: bionic
-      arch: amd64
-      addons:
-        snaps:
-          - name: kubectl
-            confinement: classic
-            channel: latest/stable
-          - name: helm
-            confinement: classic
-            channel: latest/stable
-      language: python
-      python: 3.7
-      before_install:
-        - pip3 install virtualenv
-        - virtualenv -p $(which python3) ~venvpy3
-        - source ~venvpy3/bin/activate
-        - pip install -r requirements.txt
-      script:
-        - sudo make deploy-kind
-      after_success:
-        - deactivate
-
-    - name: "openesb kind w snapped kubectl helm Python 3.7 on bionic" #OK
-      dist: bionic
+    - name: "openesb kind w snapped kubectl helm  on focal amd64" 
+      dist: focal
       arch: amd64
       addons:
         snaps:
@@ -193,8 +36,35 @@ matrix:
         - sudo kind delete cluster --name openesb-testing
       after_success:
         - deactivate
+        
+    - name: "openesb kind w snapped kubectl helm  on bionic arm64" 
+      dist: bionic
+      arch: arm64
+      addons:
+        snaps:
+          - name: kubectl
+            confinement: classic
+            channel: latest/stable
+          - name: helm
+            confinement: classic
+            channel: latest/stable
+      language: python
+      python: 3.7
+      before_install:
+        - pip3 install virtualenv
+        - virtualenv -p $(which python3) ~venvpy3
+        - source ~venvpy3/bin/activate
+        - pip install -r requirements.txt
+      script:
+        - sudo make deploy-kind
+        - sudo kind create cluster --name openesb-testing
+        - sudo kubectl config use-context kind-openesb-testing
+        - sudo make deploy-openesb
+        - sudo kind delete cluster --name openesb-testing
+      after_success:
+        - deactivate
 
-    - name: "k8s dashboard kind w snapped kubectl helm Python 3.7 on bionic" #OK
+    - name: "openesb kind w snapped kubectl helm  on bionic amd64" 
       dist: bionic
       arch: amd64
       addons:
@@ -214,9 +84,9 @@ matrix:
         - pip install -r requirements.txt
       script:
         - sudo make deploy-kind
-        - sudo kind create cluster --name dashboard-testing
-        - sudo kubectl config use-context kind-dashboard-testing
-        - sudo make deploy-dashboard
-        - sudo kind delete cluster --name dashboard-testing
+        - sudo kind create cluster --name openesb-testing
+        - sudo kubectl config use-context kind-openesb-testing
+        - sudo make deploy-openesb
+        - sudo kind delete cluster --name openesb-testing
       after_success:
         - deactivate
