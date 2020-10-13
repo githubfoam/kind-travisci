@@ -11,7 +11,7 @@ cd app/voting
 kubectl create namespace vote
 kubectl create -f deployments/
 kubectl create -f services/
-minikube addons enable ingress
+# minikube addons enable ingress
 kubectl apply -f demo-ingress.yaml
 kubectl --namespace=vote get ingress
 
