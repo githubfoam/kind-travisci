@@ -36,33 +36,34 @@ matrix:
         - sudo kind delete cluster --name openesb-testing
       after_success:
         - deactivate
-        
-    - name: "openesb kind w snapped kubectl helm  on bionic arm64" 
-      dist: bionic
-      arch: arm64
-      addons:
-        snaps:
-          - name: kubectl
-            confinement: classic
-            channel: latest/stable
-          - name: helm
-            confinement: classic
-            channel: latest/stable
-      language: python
-      python: 3.7
-      before_install:
-        - pip3 install virtualenv
-        - virtualenv -p $(which python3) ~venvpy3
-        - source ~venvpy3/bin/activate
-        - pip install -r requirements.txt
-      script:
-        - sudo make deploy-kind
-        - sudo kind create cluster --name openesb-testing
-        - sudo kubectl config use-context kind-openesb-testing
-        - sudo make deploy-openesb
-        - sudo kind delete cluster --name openesb-testing
-      after_success:
-        - deactivate
+
+        # usr/local/bin/kind: 8: /usr/local/bin/kind: Syntax error: ")" unexpected
+    # - name: "openesb kind w snapped kubectl helm  on bionic arm64" 
+    #   dist: bionic
+    #   arch: arm64
+    #   addons:
+    #     snaps:
+    #       - name: kubectl
+    #         confinement: classic
+    #         channel: latest/stable
+    #       - name: helm
+    #         confinement: classic
+    #         channel: latest/stable
+    #   language: python
+    #   python: 3.7
+    #   before_install:
+    #     - pip3 install virtualenv
+    #     - virtualenv -p $(which python3) ~venvpy3
+    #     - source ~venvpy3/bin/activate
+    #     - pip install -r requirements.txt
+    #   script:
+    #     - sudo make deploy-kind
+    #     - sudo kind create cluster --name openesb-testing
+    #     - sudo kubectl config use-context kind-openesb-testing
+    #     - sudo make deploy-openesb
+    #     - sudo kind delete cluster --name openesb-testing
+    #   after_success:
+    #     - deactivate
 
     - name: "openesb kind w snapped kubectl helm  on bionic amd64" 
       dist: bionic
