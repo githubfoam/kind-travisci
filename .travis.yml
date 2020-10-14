@@ -37,35 +37,36 @@ matrix:
       after_success:
         - deactivate
 
+# app/deploy-cilium-hubble-local.sh: line 13: /usr/local/bin/kind: cannot execute binary file: Exec format error
     #https://docs.cilium.io/en/latest/gettingstarted/kind/
-    - name: "cilium hubble local kind w snapped kubectl helm  on bionic arm64" 
-      dist: bionic
-      arch: arm64
-      addons:
-        snaps:
-          - name: kubectl
-            confinement: classic
-            channel: latest/stable
-          - name: helm
-            confinement: classic
-            channel: latest/stable
-      language: python
-      python: 3.7
-      before_install:
-        - pip3 install virtualenv
-        - virtualenv -p $(which python3) ~venvpy3
-        - source ~venvpy3/bin/activate
-        - pip install -r requirements.txt
-      script:
-        - sudo make deploy-kind
-        - sudo kind create cluster --config=app/kind-config.yaml
-        - sudo kubectl cluster-info --context kind-kind
-        - sudo make deploy-cilium-hubble-local
-      after_success:
-        - deactivate
+    # - name: "cilium hubble local kind w snapped kubectl helm  on bionic arm64" 
+    #   dist: bionic
+    #   arch: arm64
+    #   addons:
+    #     snaps:
+    #       - name: kubectl
+    #         confinement: classic
+    #         channel: latest/stable
+    #       - name: helm
+    #         confinement: classic
+    #         channel: latest/stable
+    #   language: python
+    #   python: 3.7
+    #   before_install:
+    #     - pip3 install virtualenv
+    #     - virtualenv -p $(which python3) ~venvpy3
+    #     - source ~venvpy3/bin/activate
+    #     - pip install -r requirements.txt
+    #   script:
+    #     - sudo make deploy-kind
+    #     - sudo kind create cluster --config=app/kind-config.yaml
+    #     - sudo kubectl cluster-info --context kind-kind
+    #     - sudo make deploy-cilium-hubble-local
+    #   after_success:
+    #     - deactivate
 
     #https://docs.cilium.io/en/latest/gettingstarted/kind/
-    - name: "cilium hubble local kind w snapped kubectl helm  on bionic" 
+    - name: "cilium hubble local kind w snapped kubectl helm  on bionic amd64" 
       dist: bionic
       arch: amd64
       addons:
@@ -118,32 +119,33 @@ matrix:
       after_success:
         - deactivate
 
+# app/deploy-cilium.sh: line 13: /usr/local/bin/kind: cannot execute binary file: Exec format error
       #https://docs.cilium.io/en/latest/gettingstarted/kind/
-    - name: "cilium kind w snapped kubectl helm on bionic arm64"
-      dist: bionic
-      arch: arm64
-      addons:
-        snaps:
-          - name: kubectl
-            confinement: classic
-            channel: latest/stable
-          - name: helm
-            confinement: classic
-            channel: latest/stable
-      language: python
-      python: 3.7
-      before_install:
-        - pip3 install virtualenv
-        - virtualenv -p $(which python3) ~venvpy3
-        - source ~venvpy3/bin/activate
-        - pip install -r requirements.txt
-      script:
-        - sudo make deploy-kind
-        - sudo kind create cluster --config=app/kind-config.yaml
-        - sudo kubectl cluster-info --context kind-kind
-        - sudo make deploy-cilium
-      after_success:
-        - deactivate
+    # - name: "cilium kind w snapped kubectl helm on bionic arm64"
+    #   dist: bionic
+    #   arch: arm64
+    #   addons:
+    #     snaps:
+    #       - name: kubectl
+    #         confinement: classic
+    #         channel: latest/stable
+    #       - name: helm
+    #         confinement: classic
+    #         channel: latest/stable
+    #   language: python
+    #   python: 3.7
+    #   before_install:
+    #     - pip3 install virtualenv
+    #     - virtualenv -p $(which python3) ~venvpy3
+    #     - source ~venvpy3/bin/activate
+    #     - pip install -r requirements.txt
+    #   script:
+    #     - sudo make deploy-kind
+    #     - sudo kind create cluster --config=app/kind-config.yaml
+    #     - sudo kubectl cluster-info --context kind-kind
+    #     - sudo make deploy-cilium
+    #   after_success:
+    #     - deactivate
 
       #https://docs.cilium.io/en/latest/gettingstarted/kind/
     - name: "cilium kind w snapped kubectl helm on bionic amd64"
