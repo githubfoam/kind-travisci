@@ -4,6 +4,26 @@ kind pipeline
 Travis (.com) dev branch:
 [![Build Status](https://travis-ci.com/githubfoam/kind-travisci.svg?branch=master)](https://travis-ci.com/githubfoam/kind-travisci)  
 
+Travis (.com) Istio  branch:
+[![Build Status](https://travis-ci.com/githubfoam/kind-travisci.svg?branch=feature_istio)](https://travis-ci.com/githubfoam/kind-travisci) 
+
+Travis (.com) weavescope  branch:
+[![Build Status](https://travis-ci.com/githubfoam/kind-travisci.svg?branch=feature_weavescope)](https://travis-ci.com/githubfoam/kind-travisci) 
+
+Travis (.com) dashboard  branch:
+[![Build Status](https://travis-ci.com/githubfoam/kind-travisci.svg?branch=feature_k8s_dashboard)](https://travis-ci.com/githubfoam/kind-travisci) 
+
+Travis (.com)  openesb   branch:
+[![Build Status](https://travis-ci.com/githubfoam/kind-travisci.svg?branch=feature_openesb)](https://travis-ci.com/githubfoam/kind-travisci) 
+
+Travis (.com)  kubeflow    branch:
+[![Build Status](https://travis-ci.com/githubfoam/kind-travisci.svg?branch=feature_kubeflow)](https://travis-ci.com/githubfoam/kind-travisci) 
+
+Travis (.com)  cilium    branch:
+[![Build Status](https://travis-ci.com/githubfoam/kind-travisci.svg?branch=feature_cilium)](https://travis-ci.com/githubfoam/kind-travisci) 
+
+Travis (.com)  chaos mesh    branch:
+[![Build Status](https://travis-ci.com/githubfoam/kind-travisci.svg?branch=feature_chaosmesh)](https://travis-ci.com/githubfoam/kind-travisci) 
 
 smoke tests
 ~~~~
