@@ -25,6 +25,16 @@ Travis (.com)  cilium    branch:
 Travis (.com)  chaos mesh    branch:
 [![Build Status](https://travis-ci.com/githubfoam/kind-travisci.svg?branch=feature_chaosmesh)](https://travis-ci.com/githubfoam/kind-travisci) 
 
+Travis (.com)  microservices    branch:
+[![Build Status](https://travis-ci.com/githubfoam/kind-travisci.svg?branch=feature_microservices)](https://travis-ci.com/githubfoam/kind-travisci) 
+
+Travis (.com)   EFK     branch:
+[![Build Status](https://travis-ci.com/githubfoam/kind-travisci.svg?branch=feature_EFK)](https://travis-ci.com/githubfoam/kind-travisci) 
+
+Travis (.com)  ELK    branch:
+[![Build Status](https://travis-ci.com/githubfoam/kind-travisci.svg?branch=feature_ELK)](https://travis-ci.com/githubfoam/kind-travisci) 
+
+
 smoke tests
 ~~~~
 istio service mesh
