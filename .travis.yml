@@ -10,7 +10,7 @@ matrix:
   fast_finish: true
   include:
 
-    - name: "istio service mesh kind w snapped kubectl helm Python 3.7 on bionic" #OK
+    - name: "Istio service mesh kind w snapped kubectl helm Python 3.7 on bionic" #OK
       dist: bionic
       arch: amd64
       addons:

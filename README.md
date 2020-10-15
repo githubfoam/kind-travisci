@@ -34,6 +34,8 @@ Travis (.com)   EFK     branch:
 Travis (.com)  ELK    branch:
 [![Build Status](https://travis-ci.com/githubfoam/kind-travisci.svg?branch=feature_ELK)](https://travis-ci.com/githubfoam/kind-travisci) 
 
+Travis (.com)  voting_app    branch:
+[![Build Status](https://travis-ci.com/githubfoam/kind-travisci.svg?branch=feature_voting_app)](https://travis-ci.com/githubfoam/kind-travisci) 
 
 smoke tests
 ~~~~
