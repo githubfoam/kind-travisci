@@ -313,105 +313,105 @@ EOF
 # export NAMESPACE=tutorial, tutorial-user-config.yaml
 echo $NAMESPACE
 
-# Set the KUBECONFIG environment variable for the ${NAMESPACE}-user-config.yaml configuration file
-# export KUBECONFIG=./${NAMESPACE}-user-config.yaml
-export KUBECONFIG=$BASEDIR/${NAMESPACE}-user-config.yaml
+# # Set the KUBECONFIG environment variable for the ${NAMESPACE}-user-config.yaml configuration file
+# # export KUBECONFIG=./${NAMESPACE}-user-config.yaml
+# export KUBECONFIG=$BASEDIR/${NAMESPACE}-user-config.yaml
 
-# Verify that the configuration took effect by printing the current namespaces
-# see the name of your namespace in the output
-kubectl config view -o jsonpath="{.contexts[?(@.name==\"$(kubectl config current-context)\")].context.namespace}"
-
-
-
-# Setup a Local Computer
-# https://istio.io/latest/docs/examples/microservices-istio/setup-local-computer/
-# verify istioctl
-istioctl version
-
-
-# Run a Microservice Locally
-# https://istio.io/latest/docs/examples/microservices-istio/single/
-
-
-# Download the service’s code and the package file into a separate directory
-mkdir ratings && cd ratings
-curl -s https://raw.githubusercontent.com/istio/istio/release-1.6/samples/bookinfo/src/ratings/ratings.js -o ratings.js
-curl -s https://raw.githubusercontent.com/istio/istio/release-1.6/samples/bookinfo/src/ratings/package.json -o package.json
-
-
- # Install the dependencies of the ratings service in the same folder where you stored the service code and the package file
- npm install
-
-# Run the service, passing 9080 as a parameter. The application then listens on port 9080
-npm start 9080 &
-
-# Open http://localhost:9080/ratings/7 in your browser
-# curl localhost:9080/ratings/7
-
-
-# Use the POST method of the curl command to set the ratings for the product to 1
-curl -X POST localhost:9080/ratings/7 -d '{"Reviewer1":1,"Reviewer2":1}'
-
-# Check the updated ratings
-curl localhost:9080/ratings/7 &
-
-
-# Run ratings in Docker
-# how to package a single service into a container
-# https://istio.io/latest/docs/examples/microservices-istio/package-service/
-
-
-# Download the Dockerfile for the ratings microservice
-curl -s https://raw.githubusercontent.com/istio/istio/release-1.6/samples/bookinfo/src/ratings/Dockerfile -o Dockerfile
-# Observe the Dockerfile
-cat Dockerfile
-# Build a Docker image from the Dockerfile
-# docker build -t $USER/ratings .
-docker build -t . $USER/ratings
-
- # instructs Docker to expose port 9080 of the container to port 9081 of your computer,
- # allowing you to access the ratings microservice on port 9081.
-docker run -d -p 9081:9080 $USER/ratings &
-
-# Access http://localhost:9081/ratings/7 in your browser
-# curl localhost:9081/ratings/7
-
-# Observe the running container.
-docker ps
-# Stop the running containers
-# docker stop <the container ID from the output of docker ps>
+# # Verify that the configuration took effect by printing the current namespaces
+# # see the name of your namespace in the output
+# kubectl config view -o jsonpath="{.contexts[?(@.name==\"$(kubectl config current-context)\")].context.namespace}"
 
 
 
-# Run Bookinfo with Kubernetes
-# how to deploy the whole application to a Kubernetes cluster.
-# https://istio.io/latest/docs/examples/microservices-istio/bookinfo-kubernetes/
+# # Setup a Local Computer
+# # https://istio.io/latest/docs/examples/microservices-istio/setup-local-computer/
+# # verify istioctl
+# istioctl version
 
 
-# Deploy the application and a testing pod
-# Set the MYHOST environment variable to hold the URL of the application
-export MYHOST=$(kubectl config view -o jsonpath={.contexts..namespace}).bookinfo.com
-
-# Deploy the application to your Kubernetes cluster
-kubectl apply -l version!=v2,version!=v3 -f https://raw.githubusercontent.com/istio/istio/release-1.6/samples/bookinfo/platform/kube/bookinfo.yaml
-
-# Check the status of the pods
-kubectl get pods
+# # Run a Microservice Locally
+# # https://istio.io/latest/docs/examples/microservices-istio/single/
 
 
-# After the four services achieve the Running status, you can scale the deployment
-# each version of each microservice run in three pods
-kubectl scale deployments --all --replicas 3
-
-# Check the status of the pods
-kubectl get pods
-
-# After the services achieve the Running status, deploy a testing pod, sleep, to use for sending requests to your microservices
-kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.6/samples/sleep/sleep.yaml
-
-# confirm that the Bookinfo application is running, send a request to it with a curl command from your testing pod:
-# interactive shell
-# kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items[0].metadata.name}') -c sleep -- curl productpage:9080/productpage | grep -o "<title>.*</title>"
+# # Download the service’s code and the package file into a separate directory
+# mkdir ratings && cd ratings
+# curl -s https://raw.githubusercontent.com/istio/istio/release-1.6/samples/bookinfo/src/ratings/ratings.js -o ratings.js
+# curl -s https://raw.githubusercontent.com/istio/istio/release-1.6/samples/bookinfo/src/ratings/package.json -o package.json
 
 
-# Enable external access to the application
+#  # Install the dependencies of the ratings service in the same folder where you stored the service code and the package file
+#  npm install
+
+# # Run the service, passing 9080 as a parameter. The application then listens on port 9080
+# npm start 9080 &
+
+# # Open http://localhost:9080/ratings/7 in your browser
+# # curl localhost:9080/ratings/7
+
+
+# # Use the POST method of the curl command to set the ratings for the product to 1
+# curl -X POST localhost:9080/ratings/7 -d '{"Reviewer1":1,"Reviewer2":1}'
+
+# # Check the updated ratings
+# curl localhost:9080/ratings/7 &
+
+
+# # Run ratings in Docker
+# # how to package a single service into a container
+# # https://istio.io/latest/docs/examples/microservices-istio/package-service/
+
+
+# # Download the Dockerfile for the ratings microservice
+# curl -s https://raw.githubusercontent.com/istio/istio/release-1.6/samples/bookinfo/src/ratings/Dockerfile -o Dockerfile
+# # Observe the Dockerfile
+# cat Dockerfile
+# # Build a Docker image from the Dockerfile
+# # docker build -t $USER/ratings .
+# docker build -t . $USER/ratings
+
+#  # instructs Docker to expose port 9080 of the container to port 9081 of your computer,
+#  # allowing you to access the ratings microservice on port 9081.
+# docker run -d -p 9081:9080 $USER/ratings &
+
+# # Access http://localhost:9081/ratings/7 in your browser
+# # curl localhost:9081/ratings/7
+
+# # Observe the running container.
+# docker ps
+# # Stop the running containers
+# # docker stop <the container ID from the output of docker ps>
+
+
+
+# # Run Bookinfo with Kubernetes
+# # how to deploy the whole application to a Kubernetes cluster.
+# # https://istio.io/latest/docs/examples/microservices-istio/bookinfo-kubernetes/
+
+
+# # Deploy the application and a testing pod
+# # Set the MYHOST environment variable to hold the URL of the application
+# export MYHOST=$(kubectl config view -o jsonpath={.contexts..namespace}).bookinfo.com
+
+# # Deploy the application to your Kubernetes cluster
+# kubectl apply -l version!=v2,version!=v3 -f https://raw.githubusercontent.com/istio/istio/release-1.6/samples/bookinfo/platform/kube/bookinfo.yaml
+
+# # Check the status of the pods
+# kubectl get pods
+
+
+# # After the four services achieve the Running status, you can scale the deployment
+# # each version of each microservice run in three pods
+# kubectl scale deployments --all --replicas 3
+
+# # Check the status of the pods
+# kubectl get pods
+
+# # After the services achieve the Running status, deploy a testing pod, sleep, to use for sending requests to your microservices
+# kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.6/samples/sleep/sleep.yaml
+
+# # confirm that the Bookinfo application is running, send a request to it with a curl command from your testing pod:
+# # interactive shell
+# # kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items[0].metadata.name}') -c sleep -- curl productpage:9080/productpage | grep -o "<title>.*</title>"
+
+
+# # Enable external access to the application
