@@ -48,7 +48,7 @@ matrix:
   fast_finish: true
   include:
 
-    - name: "deploy argo cd  wo snaps on focal amd64"
+    - name: "deploy argo cd  w snaps on focal amd64"
       dist: focal
       arch: amd64
       addons:
@@ -75,7 +75,7 @@ matrix:
       after_success:
         - deactivate
         
-    - name: "deploy argo cd  wo snaps on bionic amd64"
+    - name: "deploy argo cd  w snaps on bionic amd64"
       dist: bionic
       arch: amd64
       addons:
