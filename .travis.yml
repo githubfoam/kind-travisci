@@ -48,6 +48,36 @@ matrix:
   fast_finish: true
   include:
 
+# https://github.com/kubernetes/test-infra/tree/master/kubetest#installation
+    - name: "run kubetest cd  w snaps on bionic amd64"
+      dist: bionic
+      arch: amd64
+      addons:
+        snaps:
+          - name: kubectl
+            confinement: classic # or devmode
+            channel: latest/stable # will be passed to --channel flag
+          - name: helm
+            confinement: classic # or devmode
+            channel: latest/stable # will be passed to --channel flag      
+      language: python
+      # python: 3.7
+      before_install:
+        - pip3 install virtualenv
+        - virtualenv -p $(which python3) ~venvpy3
+        - source ~venvpy3/bin/activate
+        - pip install -r requirements.txt
+      script:
+        - sudo make deploy-kind
+        - sudo kind create cluster --name tutorial-cluster
+        - sudo kubectl config use-context kind-tutorial-cluster
+        - sudo git clone https://github.com/kubernetes/test-infra.git
+        - GO111MODULE=on go install ./kubetest
+        - kubetest --build --up --test --down
+        - sudo kind delete cluster --name tutorial-cluster        
+      after_success:
+        - deactivate
+
     - name: "deploy argo cd  w snaps on focal amd64"
       dist: focal
       arch: amd64
