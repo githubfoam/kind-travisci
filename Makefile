@@ -4,9 +4,6 @@ APP:="app/deploy-openesb.sh"
 deploy-kubeseco:
 	bash app/deploy-kubeseco.sh
 
-deploy-argocd:
-	bash app/deploy-argocd.sh
-
 deploy-voting-app:
 	bash app/deploy-voting-app.sh
 	
